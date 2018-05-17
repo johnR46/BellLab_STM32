@@ -267,6 +267,7 @@ void searchFile(void);
 void appendFile(void);
 void SendCH370(int data[], int);
 void changeBuatRate(void);
+void keyboard(void);
 //-----------------------------------mode--------------------------------//
 
 /* Private variables ---------------------------------------------------------*/
@@ -464,31 +465,7 @@ int main(void)
   printf("Status 115200 ok \r\n");
   printf("ok");
   while (1) {
-    //createFile();
-    //appendFile();
-
-    menu_s();
-    while (mode == 3 && openFileStatus == 0) {
-      searchFile();
-    }
-    while (mode == 3 && openFileStatus == 1) {
-      ReadFile();
-    }
-    while (mode == 5) {
-      BluetoothMode();
-      // keyboardMode();
-      if (becon == 0) {
-        menu_s();
-      }
-      else {
-        keyboardMode();
-      }
-    }
-
-    //checkConnection
-    //printDot(st_bluetooth, sizeof(st_bluetooth));
-    // BluetoothMode();
-    //keyboardMode();
+   keyboard();
   }
 
 
@@ -1231,6 +1208,87 @@ void menu_s() {
         stringToUnicodeAndSendToDisplay("STM Braille SLRI");
         break;
     }
+    //------------------------------ end case menu ------------------------
+    countKey = 0;
+    keyCode = 0;
+  }
+}
+void keyboard() {
+  if (USART_GetITStatus(USART2, USART_IT_RXNE)) {
+    //----------------------------- uart to key--------------------------------
+    uart2Buffer = USART_ReceiveData(USART2);                                //-
+    if (uart2Buffer == 0xff && SeeHead == 0) {                              //-
+      SeeHead = 1;                                                          //-
+      countKey = 0;                                                         //-
+    }                                                                       //-
+
+    if (countKey >= 4 && countKey <= 6) {                                   //-
+      bufferKey3digit[countKey - 4] = uart2Buffer;                          //-
+    }
+    if (countKey == 2) //checkKeyError
+    {
+      checkKeyError = uart2Buffer;
+    }
+    countKey++;
+    // ---------------------------- end uart to key ----------------------------
+    // printf("[%x]\r\n",uart2Buffer);
+  }
+  if (countKey >= maxData) { //Recieve & checking key
+    seeHead = 0;
+    printf("See key %x,%d,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+    //printf("checkKey :%x\r\n",checkKeyError);
+    if (checkKeyError == 0xff) { //check error key
+      //printf("Key Error");
+      countKey = 0;
+      SeeHead = 0;
+    }
+    printf("current mode:%d\r\n", mode);
+    //printf("%d\r\n",sizeof(mode_1)/sizeof(int));
+    //////////////////////////////////menu selector ///////////////////////////////////
+    if (bufferKey3digit[1] != 0 || bufferKey3digit[2] != 0) { //joy menu
+      // ---------------------------- to key code -----------------------------
+      if (bufferKey3digit[2] == 1 || bufferKey3digit[2] == 0x20) { // joy is down
+        keyCode = 40; // arrow down
+        // command_++;
+      }
+      else if (bufferKey3digit[1] == 1 || bufferKey3digit[1] == 3 || bufferKey3digit[1] == 2) { // joy is up
+        keyCode = 55;  // arrow up
+      }
+      else if (bufferKey3digit[1] == 128 || bufferKey3digit[2] == 0x10) { // joy is up
+        keyCode = 38;  //
+        //  command_=8;
+      }
+      else if (bufferKey3digit[1] == 64 || bufferKey3digit[2] == 8) {
+        keyCode = 13; // enter
+      }
+      else if (bufferKey3digit[1] == 32 || bufferKey3digit[2] == 4) {
+        keyCode = 8; // backspace
+        ///command_ = 99;
+      }
+      else if (bufferKey3digit[1] == 4 ) {
+        keyCode = 38; // left
+        //  command_ = 97;
+        //command_ = 95; //before delete
+      }
+      else if (bufferKey3digit[1] == 8) {
+        keyCode = 40; // right
+        // command_ = 98;
+      }
+      if (bufferKey3digit[0] == 0x9f) {
+        printf("new Folder\r\n");
+      }
+    }
+
+    //---------------------------------end joy event--------------------------------
+    ////////////////////////////////////////////////////////////////////////////////
+    //                                                                            //
+    //                                                                            //
+    //------------------------------- mode selector --------------------------------
+    //                                                                            //
+    //                                                                            //
+    ////////////////////////////////////////////////////////////////////////////////
+    //------------------------------- mode (1) -------------------------------------
+    
     //------------------------------ end case menu ------------------------
     countKey = 0;
     keyCode = 0;
