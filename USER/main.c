@@ -269,6 +269,7 @@ void SendCH370(int data[], int);
 void changeBuatRate(void);
 void keyboard(void);
 void unicode_to_ASCII(void);
+void notepad(void);
 //-----------------------------------mode--------------------------------//
 
 /* Private variables ---------------------------------------------------------*/
@@ -310,6 +311,12 @@ int16_t USART_FLAG;
 extern void SST25_W_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 extern void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 
+
+// test g
+char str1[4096];
+char str2[20];
+
+int cur = 0;
 
 /*----------------------------------------------------------------------------*/
 
@@ -465,23 +472,121 @@ int main(void)
 
   printf("Status 115200 ok \r\n");
   printf("ok");
-	 
+
 
   while (1) {
-   keyboard();
-		
+    // keyboard();
+    notepad();
   }
 
 
 
 }
-void unicode_to_ASCII(){
-	for(i = 0; i<255;i++){
-		// unicodeTable[(char)bufferKey3digit[0]]; 
-	//	bufferKey3digit[0]
-	}
-	printf("%c",j);
-	
+
+void notepad() {
+
+  if (cur == 20) {
+    strcat(str1, str2);
+
+    cur = 0;
+    printf(" str size it  %d  is %s \n",strlen(str1), str1);
+
+  }
+
+
+  if (USART_GetITStatus(USART2, USART_IT_RXNE)) {
+    //----------------------------- uart to key--------------------------------
+    uart2Buffer = USART_ReceiveData(USART2);                                //-
+    if (uart2Buffer == 0xff && SeeHead == 0) {                              //-
+      SeeHead = 1;                                                          //-
+      countKey = 0;                                                         //-
+    }                                                                       //-
+
+    if (countKey >= 4 && countKey <= 6) {                                   //-
+      bufferKey3digit[countKey - 4] = uart2Buffer;                          //-
+    }
+    if (countKey == 2) //checkKeyError
+    {
+      checkKeyError = uart2Buffer;
+    }
+    countKey++;
+    // ---------------------------- end uart to key ----------------------------
+    // printf("[%x]\r\n",uart2Buffer);
+  }
+  if (countKey >= maxData) { //Recieve & checking key
+    seeHead = 0;
+    printf("See key %x,%d,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+
+    //printf("checkKey :%x\r\n",checkKeyError);
+    if (checkKeyError == 0xff) { //check error key
+      //printf("Key Error");
+      countKey = 0;
+      SeeHead = 0;
+    }
+    //printf("%d\r\n",sizeof(mode_1)/sizeof(int));
+    //////////////////////////////////menu selector ///////////////////////////////////
+		
+    if (bufferKey3digit[1] != 0 || bufferKey3digit[2] != 0) { //joy menu
+      // ---------------------------- to key code -----------------------------
+      if (bufferKey3digit[2] == 1 || bufferKey3digit[2] == 0x20) { // joy is down
+        keyCode = 40; // arrow down
+        // command_++;
+      }
+      else if (bufferKey3digit[1] == 1 || bufferKey3digit[1] == 3 || bufferKey3digit[1] == 2) { // joy is up
+        keyCode = 55;  // arrow up
+      }
+ 
+
+    }
+		
+		if (bufferKey3digit[1] == 3  && bufferKey3digit[0] == 0) { // joy is up
+        keyCode = 32;  // arrow up
+      }
+		
+			
+			if(bufferKey3digit[0] == 0x80){
+					str2[cur] = '0';
+					cur--;
+			}
+		
+    if ((bufferKey3digit[0] != 0 && keyCode != 32 && bufferKey3digit[0] != 0x80 )) {
+      for ( i = 0; i < 255; i++) {
+        if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
+					
+          str2[cur] = i;
+          cur++;
+          break;
+        }
+			}
+				
+
+      
+    }
+		
+		
+       if (keyCode == 32) {
+          str2[cur] = 32;
+          cur++;
+
+        }
+				
+
+        printf("%c is index %d \n",str2[cur-1],cur-1);
+
+
+    countKey = 0;
+    keyCode = 0;
+  }
+
+}
+
+void unicode_to_ASCII() {
+  for (i = 0; i < 255; i++) {
+    // unicodeTable[(char)bufferKey3digit[0]];
+    //  bufferKey3digit[0]
+  }
+  printf("%c", j);
+
 }
 
 void stringToUnicodeAndSendToDisplay(char *string) {
@@ -887,8 +992,8 @@ void ReadFile() { //readf
           stringToUnicodeAndSendToDisplay(buffer22Char);
           pointer22char += 23;
           printf("\r\n----------------------end---%d-----------------------\r\n", addressWriteFlashTemp);
-					AmountSector = addressWriteFlashTemp/4096;
-					AmountSectorT = addressWriteFlashTemp%4096;
+          AmountSector = addressWriteFlashTemp / 4096;
+          AmountSectorT = addressWriteFlashTemp % 4096;
           printf("d::::%s---**\r\n", SST25_buffer99);
           while (endReadFile == 1) { //readfe
             menu_s();
@@ -1117,7 +1222,7 @@ void menu_s() {
           seaching = 1;
           countMenuInReadMode = 0;
         }
-      } else if (mode == 3 && endReadFile!=1) { //openf
+      } else if (mode == 3 && endReadFile != 1) { //openf
         strcpy(prepareNameToOpen, filelist[countMenuInReadMode - 1]);
         printf("Open %s\r\n", prepareNameToOpen);
         i = 0;
@@ -1167,7 +1272,7 @@ void menu_s() {
         } else {
           if (keyCode == 38 || keyCode == 40 && endReadFile == 1) { //readfg
 
-            for (i = pointer22char; i < (pointer22char + 22 < addressWriteFlashTemp ? pointer22char + 22 : addressWriteFlashTemp-pointer22char)&&SST25_buffer99[i]!=0x0a ; i++) {
+            for (i = pointer22char; i < (pointer22char + 22 < addressWriteFlashTemp ? pointer22char + 22 : addressWriteFlashTemp - pointer22char) && SST25_buffer99[i] != 0x0a ; i++) {
               if (SST25_buffer99[i] != NULL) {
                 buffer22Char[i - pointer22char] = SST25_buffer99[i];
                 printf("%c/", SST25_buffer99[i]);
@@ -1177,17 +1282,17 @@ void menu_s() {
             stringToUnicodeAndSendToDisplay(buffer22Char);
             printf("send: %d %s -\r\n", pointer22char, buffer22Char);
             if (keyCode == 40) {
-						/* if(pointer22char+22<4096&&pointer22char<addressWriteFlashTemp){
-							pointer22char+=22;
-						 }else{
-							pointer22char+=4096-pointer22char;
-						 }*/
-							/*
-							countSector
-							pointer22char
-							addressWriteFlashTemp
-							*/
-            
+              /* if(pointer22char+22<4096&&pointer22char<addressWriteFlashTemp){
+                pointer22char+=22;
+                }else{
+                pointer22char+=4096-pointer22char;
+                }*/
+              /*
+                countSector
+                pointer22char
+                addressWriteFlashTemp
+              */
+
             } else if (keyCode == 38) {
               if (pointer22char >= 22) {
                 pointer22char -= 22;
@@ -1249,7 +1354,7 @@ void keyboard() {
   if (countKey >= maxData) { //Recieve & checking key
     seeHead = 0;
     printf("See key %x,%d,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-		
+
     //printf("checkKey :%x\r\n",checkKeyError);
     if (checkKeyError == 0xff) { //check error key
       //printf("Key Error");
@@ -1267,15 +1372,15 @@ void keyboard() {
       else if (bufferKey3digit[1] == 1 || bufferKey3digit[1] == 3 || bufferKey3digit[1] == 2) { // joy is up
         keyCode = 55;  // arrow up
       }
-		}
-     if(sizeof(bufferKey3digit[0] != 0)){
-		 for( i =0;i<255;i++){
-			if(bufferKey3digit[0] == unicodeTable[(char) i]){
-				printf("%c",i);
-				break;
-			}
-		 }
-	 }
+    }
+    if (sizeof(bufferKey3digit[0] != 0)) {
+      for ( i = 0; i < 255; i++) {
+        if (bufferKey3digit[0] == unicodeTable[(char) i]) {
+          printf("%c", i);
+          break;
+        }
+      }
+    }
     countKey = 0;
     keyCode = 0;
   }
