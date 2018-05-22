@@ -28,6 +28,8 @@
 #include <inttypes.h>
 #include <stdlib.h> //strtol
 #include "stm32f10x_spi.h"
+#include <math.h>
+
 
 
 #define RCC_APB2Periph_GPIO_SPI_FLASH_CS      RCC_APB2Periph_GPIOD
@@ -268,8 +270,12 @@ void appendFile(void);
 void SendCH370(int data[], int);
 void changeBuatRate(void);
 void keyboard(void);
+
+// john function
 void unicode_to_ASCII(void);
 void notepad(void);
+int mapCursor(int,int,int);
+
 //-----------------------------------mode--------------------------------//
 
 /* Private variables ---------------------------------------------------------*/
@@ -312,9 +318,12 @@ extern void SST25_W_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 extern void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 
 
-// test g
+// John global Value
 char str1[4096];
 char str2[20];
+char ch = 0 ;
+int seeCur = 0;
+int mapcur = 0;
 
 int cur = 0;
 
@@ -477,10 +486,28 @@ int main(void)
   while (1) {
     // keyboard();
     notepad();
+
   }
 
 
 
+}
+
+
+int  mapCursor(int P1,int P2,int P3){
+	if(P1!=0){
+		return sqrt(P1)-1+0.5;
+	
+	}
+	else if(P2!=0){
+	return sqrt(P2) + 7+0.5;
+	}
+	else if(P3!=0){
+		return sqrt(P3) + 15+0.5;
+	}
+	
+	
+	
 }
 
 void notepad() {
@@ -489,7 +516,7 @@ void notepad() {
     strcat(str1, str2);
 
     cur = 0;
-    printf(" str size it  %d  is %s \n",strlen(str1), str1);
+    printf(" str size it  %d  is %s \n", strlen(str1), str1);
 
   }
 
@@ -500,7 +527,12 @@ void notepad() {
     if (uart2Buffer == 0xff && SeeHead == 0) {                              //-
       SeeHead = 1;                                                          //-
       countKey = 0;                                                         //-
-    }                                                                       //-
+    }         
+                                                                            //-
+		if(countKey == 2 && uart2Buffer == 0xa4){
+			seeCur = 1;
+		}
+		
 
     if (countKey >= 4 && countKey <= 6) {                                   //-
       bufferKey3digit[countKey - 4] = uart2Buffer;                          //-
@@ -515,7 +547,7 @@ void notepad() {
   }
   if (countKey >= maxData) { //Recieve & checking key
     seeHead = 0;
-    printf("See key %x,%d,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+  printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
 
     //printf("checkKey :%x\r\n",checkKeyError);
     if (checkKeyError == 0xff) { //check error key
@@ -523,9 +555,10 @@ void notepad() {
       countKey = 0;
       SeeHead = 0;
     }
+		
     //printf("%d\r\n",sizeof(mode_1)/sizeof(int));
     //////////////////////////////////menu selector ///////////////////////////////////
-		
+
     if (bufferKey3digit[1] != 0 || bufferKey3digit[2] != 0) { //joy menu
       // ---------------------------- to key code -----------------------------
       if (bufferKey3digit[2] == 1 || bufferKey3digit[2] == 0x20) { // joy is down
@@ -535,47 +568,47 @@ void notepad() {
       else if (bufferKey3digit[1] == 1 || bufferKey3digit[1] == 3 || bufferKey3digit[1] == 2) { // joy is up
         keyCode = 55;  // arrow up
       }
- 
+
 
     }
-		
-		if (bufferKey3digit[1] == 3  && bufferKey3digit[0] == 0) { // joy is up
-        keyCode = 32;  // arrow up
-      }
-		
-			
-			if(bufferKey3digit[0] == 0x80){
-					str2[cur] = '0';
-					cur--;
-			}
-		
-    if ((bufferKey3digit[0] != 0 && keyCode != 32 && bufferKey3digit[0] != 0x80 )) {
+
+    if (bufferKey3digit[1] == 3  && bufferKey3digit[0] == 0) { // joy is up
+      keyCode = 32;  // arrow up
+    }
+
+
+    if (bufferKey3digit[0] == 0x80 && seeCur != 1) {
+      str2[cur] = '\0';
+      cur--;
+    }
+		if(seeCur == 1){
+		mapcur = 	mapCursor(bufferKey3digit[0],bufferKey3digit[1],bufferKey3digit[2]);
+			printf("%d is curmap",mapcur);
+		}
+
+    if ((bufferKey3digit[0] != 0 && keyCode != 32 && bufferKey3digit[0] != 0x80 && seeCur != 1 )) {
       for ( i = 0; i < 255; i++) {
         if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
-					
+
           str2[cur] = i;
+				//	printf("%c", str2[cur]);
           cur++;
           break;
         }
-			}
-				
-
-      
+      }
     }
-		
-		
-       if (keyCode == 32) {
-          str2[cur] = 32;
-          cur++;
 
-        }
-				
+    if (keyCode == 32) {
+      str2[cur] = 32;
+      cur++;
 
-        printf("%c is index %d \n",str2[cur-1],cur-1);
+    }
+    printf("%s\r\n",str2);
 
 
     countKey = 0;
     keyCode = 0;
+		seeCur = 0;
   }
 
 }
