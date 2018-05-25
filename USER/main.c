@@ -275,6 +275,8 @@ void keyboard(void);
 void unicode_to_ASCII(void);
 void notepad(void);
 int mapCursor(int,int,int);
+int checkBit(int);
+
 
 //-----------------------------------mode--------------------------------//
 
@@ -486,7 +488,7 @@ int main(void)
   while (1) {
     // keyboard();
     notepad();
-
+ 
   }
 
 
@@ -496,18 +498,25 @@ int main(void)
 
 int  mapCursor(int P1,int P2,int P3){
 	if(P1!=0){
-		return sqrt(P1)-1+0.5;
-	
+	return	checkBit(P1);
 	}
 	else if(P2!=0){
-	return sqrt(P2) + 7+0.5;
+	return	checkBit(P2)+8;
 	}
 	else if(P3!=0){
-		return sqrt(P3) + 15+0.5;
+	return	checkBit(P3)+16;
+	}else{
+	return 0;
 	}
-	
-	
-	
+}
+int checkBit(int input){
+	int i;
+	for(i = 0;i<=8;i++){	
+				if(input==1)
+				break;
+				input = input>>1;
+	}
+	return i;
 }
 
 void notepad() {
@@ -583,27 +592,33 @@ void notepad() {
     }
 		if(seeCur == 1){
 		mapcur = 	mapCursor(bufferKey3digit[0],bufferKey3digit[1],bufferKey3digit[2]);
-			printf("%d is curmap",mapcur);
+		
+			cur = mapcur;
+		//	
+			
+			
 		}
 
     if ((bufferKey3digit[0] != 0 && keyCode != 32 && bufferKey3digit[0] != 0x80 && seeCur != 1 )) {
       for ( i = 0; i < 255; i++) {
         if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
-
           str2[cur] = i;
-				//	printf("%c", str2[cur]);
           cur++;
+		
+						
           break;
         }
       }
     }
+		
+		
 
     if (keyCode == 32) {
       str2[cur] = 32;
       cur++;
 
     }
-    printf("%s\r\n",str2);
+    printf("%s  len is %d\r\n",str2,strlen(str2));
 
 
     countKey = 0;
@@ -614,11 +629,15 @@ void notepad() {
 }
 
 void unicode_to_ASCII() {
-  for (i = 0; i < 255; i++) {
-    // unicodeTable[(char)bufferKey3digit[0]];
-    //  bufferKey3digit[0]
-  }
-  printf("%c", j);
+    for ( i = 0; i < 255; i++) {
+        if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
+
+          ch = i;
+					printf("%c",ch);
+          
+          break;
+        }
+      }
 
 }
 
