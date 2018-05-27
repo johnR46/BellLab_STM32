@@ -323,7 +323,7 @@ extern void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 // John global Value
 char str1[4096];
 char str2[20];
-char ch[20];
+char ch[1];
 int seeCur = 0;
 int mapcur = 0;
 int cur = 0;
@@ -597,9 +597,14 @@ void notepad() {
 
 		if(seeCur == 1){
 				mapcur = 	mapCursor(bufferKey3digit[0],bufferKey3digit[1],bufferKey3digit[2]);
+			if(mapcur <=  cur){
+				mapcur1 = mapcur;
 				statusmid = 1;
-			
-			printf(" mapcur = %d \n ",mapcur);
+					
+			printf(" mapcur = %d \n ",mapcur1);
+			}
+		
+		
 			
 			
 			
@@ -611,10 +616,7 @@ void notepad() {
 			  str2[cur] = '\0';
         cur--;
 			}
-			if(statusmid == 1){
-			ch[cur] = '\0';
-				cur --;
-			}
+		
 			
 			
 			
@@ -623,7 +625,7 @@ void notepad() {
     }
 		
 		
-    if ((bufferKey3digit[0] != 0  )) {
+    if ((bufferKey3digit[0] != 0 || 	keyCode == 32		)) {
 			
 			
 			for ( i = 0; i < 255; i++) {
@@ -639,30 +641,38 @@ void notepad() {
 				
 					
 						if(statusmid == 1 ){
-								strncpy(strfirst,str2,mapcur);
-								strncpy(strlast,str2+mapcur,strlen(str2)- mapcur);
-							if(keyCode ==32){
-							ch[cur] = 32;
+							
+							printf("key = %d\t mapcur1 = %d\t seeCur =%d\t buff[0] = %d \n",keyCode,mapcur1,seeCur,bufferKey3digit[0]);
+							
+								strncpy(strfirst,str2,mapcur1);
+								strncpy(strlast,str2+mapcur1,strlen(str2)- mapcur1);
+								if(keyCode == 32){
+									
+						  	ch[0] = 32;
+									
 							  cur++;
 							}
-							if(bufferKey3digit[0] == 0x80  &&seeCur != 1){
 								
-							 	ch[cur] = '\0';
-							  cur--;
+							if(bufferKey3digit[0] == 0x80  &&seeCur != 1){
+								printf("buff[0] = %x\t",bufferKey3digit[0]);
+							 ch[0] = '\0';
+						 	cur--;
+								
+					
 							
 							}
+							
 							if(keyCode != 32 && bufferKey3digit[0] != 0x80  &&seeCur != 1 ){
-							ch[cur] = i;
+							ch[0] = i;
 							cur++;
 							}
 							
-							
-					//		printf("strfirst: %s\t",strfirst);
-							
-						//	printf("strlast: %s\n",strlast);
+					
 							
 							
-								strcat(strfirst,ch);
+							strcat(strfirst,ch);
+							
+						
 							
 						//	printf("strfirst2: %s\t",strfirst);
 							
@@ -672,6 +682,7 @@ void notepad() {
 							  memset(strfirst,'\0',strlen(strfirst));
 								memset(strlast,'\0',strlen(strlast));
 								memset(ch,'\0',strlen(ch));
+
 						}
 						
 						
@@ -682,9 +693,10 @@ void notepad() {
         }
       }
 			
-			if(mapcur >= cur){
+			if(mapcur1 >= cur){
 				
 			statusmid = 0;
+				
 			}
     
 	}
@@ -695,6 +707,8 @@ void notepad() {
       cur++;
 
     }
+		
+		
     printf("str2: %s : len %d\r\n",str2,strlen(str2));
 
    // statusmid  = 0;
