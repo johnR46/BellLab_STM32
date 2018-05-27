@@ -323,11 +323,19 @@ extern void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 // John global Value
 char str1[4096];
 char str2[20];
-char ch = 0 ;
+char ch[20];
 int seeCur = 0;
 int mapcur = 0;
-
 int cur = 0;
+int statusmid = 0;
+char strfirst[20];
+char strmiddle[20];
+int Curmid = 0;
+char strlast[20];
+int tempcur;
+int mapcur1;
+int mapcur2;
+
 
 /*----------------------------------------------------------------------------*/
 
@@ -523,6 +531,7 @@ void notepad() {
 
   if (cur == 20) {
     strcat(str1, str2);
+		memset(str2,'\0',strlen(str2));
 
     cur = 0;
     printf(" str size it  %d  is %s \n", strlen(str1), str1);
@@ -556,7 +565,7 @@ void notepad() {
   }
   if (countKey >= maxData) { //Recieve & checking key
     seeHead = 0;
-  printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+ // printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
 
     //printf("checkKey :%x\r\n",checkKeyError);
     if (checkKeyError == 0xff) { //check error key
@@ -586,41 +595,109 @@ void notepad() {
     }
 
 
-    if (bufferKey3digit[0] == 0x80 && seeCur != 1) {
-      str2[cur] = '\0';
-      cur--;
-    }
 		if(seeCur == 1){
-		mapcur = 	mapCursor(bufferKey3digit[0],bufferKey3digit[1],bufferKey3digit[2]);
+				mapcur = 	mapCursor(bufferKey3digit[0],bufferKey3digit[1],bufferKey3digit[2]);
+				statusmid = 1;
+			
+			printf(" mapcur = %d \n ",mapcur);
+			
+			
+			
+			
+}
 		
-			cur = mapcur;
-		//	
+ if (bufferKey3digit[0] == 0x80 && seeCur != 1) {
+			if(statusmid != 1){
+			  str2[cur] = '\0';
+        cur--;
+			}
+			if(statusmid == 1){
+			ch[cur] = '\0';
+				cur --;
+			}
 			
 			
-		}
-
-    if ((bufferKey3digit[0] != 0 && keyCode != 32 && bufferKey3digit[0] != 0x80 && seeCur != 1 )) {
-      for ( i = 0; i < 255; i++) {
+			
+			
+    
+    }
+		
+		
+    if ((bufferKey3digit[0] != 0  )) {
+			
+			
+			for ( i = 0; i < 255; i++) {
         if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
-          str2[cur] = i;
-          cur++;
-		
+					
+					if(statusmid != 1&& keyCode != 32 && bufferKey3digit[0] != 0x80  &&seeCur != 1 ){
+						str2[cur] = i;
+						cur++;
+							}
+					
+						
+						
+				
+					
+						if(statusmid == 1 ){
+								strncpy(strfirst,str2,mapcur);
+								strncpy(strlast,str2+mapcur,strlen(str2)- mapcur);
+							if(keyCode ==32){
+							ch[cur] = 32;
+							  cur++;
+							}
+							if(bufferKey3digit[0] == 0x80  &&seeCur != 1){
+								
+							 	ch[cur] = '\0';
+							  cur--;
+							
+							}
+							if(keyCode != 32 && bufferKey3digit[0] != 0x80  &&seeCur != 1 ){
+							ch[cur] = i;
+							cur++;
+							}
+							
+							
+					//		printf("strfirst: %s\t",strfirst);
+							
+						//	printf("strlast: %s\n",strlast);
+							
+							
+								strcat(strfirst,ch);
+							
+						//	printf("strfirst2: %s\t",strfirst);
+							
+							  strcat(strfirst,strlast);
+								strcpy(str2,strfirst);
+							
+							  memset(strfirst,'\0',strlen(strfirst));
+								memset(strlast,'\0',strlen(strlast));
+								memset(ch,'\0',strlen(ch));
+						}
+						
+						
+						
+					
 						
           break;
         }
       }
-    }
-		
+			
+			if(mapcur >= cur){
+				
+			statusmid = 0;
+			}
+    
+	}
 		
 
-    if (keyCode == 32) {
+    if (keyCode == 32 && statusmid !=1 ) {
       str2[cur] = 32;
       cur++;
 
     }
-    printf("%s  len is %d\r\n",str2,strlen(str2));
+    printf("str2: %s : len %d\r\n",str2,strlen(str2));
 
-
+   // statusmid  = 0;
     countKey = 0;
     keyCode = 0;
 		seeCur = 0;
@@ -632,9 +709,7 @@ void unicode_to_ASCII() {
     for ( i = 0; i < 255; i++) {
         if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
 
-          ch = i;
-					printf("%c",ch);
-          
+        
           break;
         }
       }
