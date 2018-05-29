@@ -534,6 +534,7 @@ void notepad() {
 		memset(str2,'\0',strlen(str2));
 
     cur = 0;
+		mapcur1 = 0;
     printf(" str size it  %d  is %s \n", strlen(str1), str1);
 
   }
@@ -601,9 +602,14 @@ void notepad() {
 				mapcur1 = mapcur;
 				statusmid = 1;
 					
-			printf(" mapcur = %d \n ",mapcur1);
-			}
 		
+			}
+			else {
+				
+				mapcur1 = cur;
+			}
+			
+			printf(" mapcur = %d \n ",mapcur1);
 		
 			
 			
@@ -640,9 +646,9 @@ void notepad() {
 						
 				
 					
-						if(statusmid == 1 ){
+						if(statusmid == 1  ){
 							
-							printf("key = %d\t mapcur1 = %d\t seeCur =%d\t buff[0] = %d \n",keyCode,mapcur1,seeCur,bufferKey3digit[0]);
+							printf("cursor = %d \t mapcur1 = %d\t  \n",cur,mapcur1);
 							
 								strncpy(strfirst,str2,mapcur1);
 								strncpy(strlast,str2+mapcur1,strlen(str2)- mapcur1);
@@ -650,21 +656,31 @@ void notepad() {
 									
 						  	ch[0] = 32;
 									
-							  cur++;
+							 
+									mapcur1++;
+									cur++;
 							}
 								
 							if(bufferKey3digit[0] == 0x80  &&seeCur != 1){
-								printf("buff[0] = %x\t",bufferKey3digit[0]);
-							 ch[0] = '\0';
-						 	cur--;
-								
-					
 							
+								//cur = mapcur1;
+								
+							//	printf("buff[0] = %x\t",bufferKey3digit[0]);
+							  ch[0] = '\0';
+								if(mapcur1!=0){
+									memset(strfirst + strlen(strfirst) -1,'\0',strlen(strfirst));
+								cur--;
+						 	//cur--;
+							//	strfirst[cur] = '\0';
+							//	cur--;
+							  mapcur1--;
+								}	
 							}
 							
 							if(keyCode != 32 && bufferKey3digit[0] != 0x80  &&seeCur != 1 ){
 							ch[0] = i;
-							cur++;
+							mapcur1++;
+								cur++;
 							}
 							
 					
