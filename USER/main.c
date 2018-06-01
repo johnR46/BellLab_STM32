@@ -29,6 +29,7 @@
 #include <stdlib.h> //strtol
 #include "stm32f10x_spi.h"
 #include <math.h>
+#include <stdlib.h>
 
 
 
@@ -177,7 +178,7 @@ int setFileName[] = {0x57, 0xab, 0x2f,0x2f,0x41,0x56,0x2E,0x54,0x58,0x54,0x00}; 
 int FileCreate[] = {0x57, 0xab, 0x34};
 int FileOpen[] = {0x57,0xab,0x32};
 int BYTE_WRITE[] = {0x57,0xab,0x3c,0x29,0x00}; // >> 0x3c, dataLength,0x00 <<
-int WR_REQ_DATA[] = {0x57,0xAB,0x2D ,0x48, 0x4F, 0x4C, 0x41, 0x20, 0x20 ,0x45 ,0x53 ,0x54, 0x4F, 0x53, 0x20, 0x53, 0x4F, 0x4E, 0x20, 0x4E, 0x55, 0x45, 0x56, 0x4F, 0x53, 0x20, 0x44, 0x41, 0x54, 0x4F, 0x53, 0x20, 0x45, 0x4E, 0x20, 0x4C, 0x41, 0x20, 0x4D, 0x45, 0x4D, 0x4F, 0x52, 0x49, 0x41};
+int WR_REQ_DATA[] = {0x57,0xAB,0x2D}; // 57,AB,2D,Data
 int BYTE_WR_GO[] ={0x57,0xab,0x3d};
 int FileClose[] = {0x57, 0xab, 0x36, 0x01};
 
@@ -293,6 +294,8 @@ void unicode_to_ASCII(void);
 void notepad(void);
 int mapCursor(int,int,int);
 int checkBit(int);
+void DataToWrite(void);
+void LengthData(void);
 
 
 //-----------------------------------mode--------------------------------//
@@ -352,6 +355,9 @@ char strlast[20];
 int tempcur;
 int mapcur1;
 int mapcur2;
+// StrData
+char DataToCH376[] = "HOLA  ESTOS SON NUEVOS DATOS EN LA MEMORIA";
+char bufferHex[20];
 
 
 /*----------------------------------------------------------------------------*/
@@ -1124,7 +1130,47 @@ void ReadFile() { //readf
 
   }
 }
+
+void DataToWrite(void) {
+  int i = 0;
+  //for( i = 3; i < strlen(DataToCH376); i++){
+  //WR_REQ_DATA[i] = DataToCH376[i];
+  //}
+  int j = 0;
+
+  for (i = 0; i < 255; i++) {
+    if (j != strlen(DataToCH376)) {
+      if (DataToCH376[j]  == unicodeTable[(char) i] ) {
+        WR_REQ_DATA[3 + j] =  unicodeTable[(char) i];
+        j++;
+      }
+    }
+
+  }
+	
+	
+	for( i = 0;i < sizeof(WR_REQ_DATA); i++ ){
+	printf("%c\t",WR_REQ_DATA[i]);
+	}
+		
+	
+	
+
+
+
+}
+void LengthData(){
+	int i = 0;
+	
+//i =  strlen(DataToCH376) -1;
+	//BYTE_WRITE[3] = i;
+	
+//	itoa(i,bufferHex,16); 
+	//BYTE_WRITE[3] = bufferHex;
+	
+}
 void createFile() {
+
 	  //  command_ = 1;
   if (command_ == 1) {
     SendCH370(checkConnection, sizeof(checkConnection));
@@ -1154,14 +1200,16 @@ void createFile() {
 		delay_ms(500);
 		command_++; //10
   } else if (command_ == 6) {
+		LengthData();
     SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
     printf("Setting data length\r\n");
     command_++; //12
 		delay_ms(50);
   }
   else if (command_ == 7) {
+		DataToWrite();
     SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
-    printf("Writing data\r\n");
+		printf("Writing data\r\n");
     command_++; //14
 		delay_ms(200);
   } else if (command_ == 8) {
