@@ -178,7 +178,7 @@ int setFileName[] = {0x57, 0xab, 0x2f,0x2f,0x41,0x56,0x2E,0x54,0x58,0x54,0x00}; 
 int FileCreate[] = {0x57, 0xab, 0x34};
 int FileOpen[] = {0x57,0xab,0x32};
 int BYTE_WRITE[] = {0x57,0xab,0x3c,0x29,0x00}; // >> 0x3c, dataLength,0x00 <<
-int WR_REQ_DATA[] = {0x57,0xAB,0x2D}; // 57,AB,2D,Data
+int WR_REQ_DATA[] 	= {0x57,0xAB,0x2D}; // 57,AB,2D,Data
 int BYTE_WR_GO[] ={0x57,0xab,0x3d};
 int FileClose[] = {0x57, 0xab, 0x36, 0x01};
 
@@ -1132,13 +1132,15 @@ void ReadFile() { //readf
 }
 
 void DataToWrite(void) {
-  int i = 0;
-  //for( i = 3; i < strlen(DataToCH376); i++){
-  //WR_REQ_DATA[i] = DataToCH376[i];
-  //}
   int j = 0;
+	int i = 0;
+	
+  for( i = 3; i < strlen(DataToCH376); i++){
+  WR_REQ_DATA[i] = (int)DataToCH376[i];
+  }
+  
 
-  for (i = 0; i < 255; i++) {
+ /* for (i = 0; i < 255; i++) {
     if (j != strlen(DataToCH376)) {
       if (DataToCH376[j]  == unicodeTable[(char) i] ) {
         WR_REQ_DATA[3 + j] =  unicodeTable[(char) i];
@@ -1146,7 +1148,7 @@ void DataToWrite(void) {
       }
     }
 
-  }
+  }  */
 	
 	
 	for( i = 0;i < sizeof(WR_REQ_DATA); i++ ){
