@@ -1131,29 +1131,17 @@ void ReadFile() { //readf
   }
 }
 
-void DataToWrite(void) {
-  int j = 0;
-	int i = 0;
+void DataToWrite() {
+int i = 0;
+sendUart(3);
 	
-  for( i = 3; i < strlen(DataToCH376); i++){
-  WR_REQ_DATA[i] = (int)DataToCH376[i];
+	
+	
+  for( i = 0; i<strlen(DataToCH376); i++){
+		printf("%c",DataToCH376[i]);
+ 
   }
-  
-
- /* for (i = 0; i < 255; i++) {
-    if (j != strlen(DataToCH376)) {
-      if (DataToCH376[j]  == unicodeTable[(char) i] ) {
-        WR_REQ_DATA[3 + j] =  unicodeTable[(char) i];
-        j++;
-      }
-    }
-
-  }  */
-	
-	
-	for( i = 0;i < sizeof(WR_REQ_DATA); i++ ){
-	printf("%c\t",WR_REQ_DATA[i]);
-	}
+ 
 		
 	
 	
@@ -1202,7 +1190,7 @@ void createFile() {
 		delay_ms(500);
 		command_++; //10
   } else if (command_ == 6) {
-		LengthData();
+	//	LengthData();
     SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
     printf("Setting data length\r\n");
     command_++; //12
@@ -1211,6 +1199,7 @@ void createFile() {
   else if (command_ == 7) {
 		DataToWrite();
     SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
+		DataToWrite();
 		printf("Writing data\r\n");
     command_++; //14
 		delay_ms(200);
