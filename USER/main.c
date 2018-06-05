@@ -174,14 +174,17 @@ int ResetAll[] = {0x57, 0xab, 0x05};
 int checkConnection[] = {0x57, 0xab, 0x06, 0x57};
 int setSDCard[] = {0x57, 0xab, 0x15, 0x03}; // SD Card Mode
 int USBDiskMount[] = {0x57, 0xab, 0x31}; 
-int setFileName[] = {0x57, 0xab, 0x2f,0x2f,0x41,0x56,0x2E,0x54,0x58,0x54,0x00};   // >> Filename.TXT NULL  <<
+//int setFileName[] = {0x57, 0xab, 0x2f,0x2f,0x41,0x56,0x2E,0x54,0x58,0x54,0x00};   // 57,ab,//Filename.TXTNULL
+int SF1[] = {0x57, 0xab};
+char FileName[] = "//AV.TXT";
+int SF2[] = {0x00};
+
+
 int FileCreate[] = {0x57, 0xab, 0x34};
 int FileOpen[] = {0x57,0xab,0x32};
-
-int BYTE_WRITE[] = {0x57,0xab,0x3c,0x14,0x00}; // >> 0x3c <<
-int WR_REQ_DATA[] 	= {0x57,0xAB,0x2D}; // 57,AB,2D
-char DataToCH376[] = "ddelay_msdelay_msela"; // data
-
+int BYTE_WRITE[] = {0x57,0xab,0x3c,0xFF,0x00}; // >> 0x3c, dataLength,0x00 <<
+int WR_REQ_DATA[] 	= {0x57,0xAB,0x2D}; // 57,AB,2D,Data
+char DataToCH376[] = "In the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists empl";
 int BYTE_WR_GO[] ={0x57,0xab,0x3d};
 int FileClose[] = {0x57, 0xab, 0x36, 0x01};
 
@@ -298,7 +301,8 @@ void notepad(void);
 int mapCursor(int,int,int);
 int checkBit(int);
 void DataToWrite(void);
-void LengthData(void);
+void SetFilename(void);
+
 
 
 //-----------------------------------mode--------------------------------//
@@ -360,7 +364,7 @@ int mapcur1;
 int mapcur2;
 // StrData
 
-
+char bufferHex[20];
 
 
 /*----------------------------------------------------------------------------*/
@@ -522,7 +526,7 @@ int main(void)
   while (1) {
     // keyboard();
    // notepad();
- createFile();
+   createFile();
   }
 
 
@@ -969,7 +973,8 @@ void ReadFile() { //readf
       delay_ms(50);
     } else if (command_ == 4) {
 
-      SendCH370(setFileName, sizeof(setFileName));
+      SendCH370(SF1, sizeof(SF1));
+			
       printf("Set file Name\r\n");
       command_++; //5
       delay_ms(50);
@@ -1133,19 +1138,39 @@ void ReadFile() { //readf
 
   }
 }
+void SetFilename(){
+	int i = 0;
+	sendUart(3);
+	for( i = 0; i<strlen(FileName); i++){
+		printf("%c",FileName[i]);
+ 
+  }
+}
+
 
 void DataToWrite() {
-	int i = 0;
-	 // set Serial printf to Serial 3 (CH376)
-		delay_ms(50);
-  for( i = 0; i<strlen(DataToCH376); i++){  
-		printf("%c",DataToCH376[i]);  // write data to Ch376
-   }
-	 
- }
+int i = 0;
+	
+sendUart(3);
+	
+	
+	
+  for( i = 0; i<strlen(DataToCH376); i++){
+		printf("%c",DataToCH376[i]);
+ 
+  }
+ 
+		
+	
+	
 
-void createFile(){
-	  //  command_ = 1;0           
+
+
+}
+
+void createFile() {
+
+	  //  command_ = 1;
   if (command_ == 1) {
     SendCH370(checkConnection, sizeof(checkConnection));
     command_++; //2
@@ -1162,7 +1187,9 @@ void createFile(){
     command_++; //6
 		delay_ms(50);
   } else if (command_ == 4) {
-    SendCH370(setFileName, sizeof(setFileName));
+    SendCH370(SF1, sizeof(SF1));
+		SetFilename();
+		SendCH370(SF2, sizeof(SF2));
     printf("Set File Name\r\n");
     command_++; //8
 		delay_ms(50);
@@ -1174,14 +1201,13 @@ void createFile(){
 		delay_ms(500);
 		command_++; //10
   } else if (command_ == 6) {
-	 SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
-	 printf("\nSetting data length\r\n");
-   command_++; //12
-	delay_ms(50);
+    SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
+    printf("Setting data length\r\n");
+    command_++; //12
+		delay_ms(50);
   }
   else if (command_ == 7) {
 		DataToWrite();
-		sendUart(1);
     SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
 		DataToWrite();
 		printf("Writing data\r\n");
@@ -1381,12 +1407,12 @@ void menu_s() {
         setFileNameLength = 5;
         while (prepareNameToOpen[i] != '\0') {
           setFileNameLength++;
-          setFileName[i + 5] = (int)prepareNameToOpen[i];
-          printf("- %x ", setFileName[i + 5]);
+        //  setFileName[i + 5] = (int)prepareNameToOpen[i];
+       //   printf("- %x ", setFileName[i + 5]);
           i++;
         }
         setFileNameLength++;
-        setFileName[i + 5] = 0x00;
+     //   setFileName[i + 5] = 0x00;
         i = 0;
         seaching = 0;
         openFileStatus = 1;
