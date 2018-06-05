@@ -177,8 +177,11 @@ int USBDiskMount[] = {0x57, 0xab, 0x31};
 int setFileName[] = {0x57, 0xab, 0x2f,0x2f,0x41,0x56,0x2E,0x54,0x58,0x54,0x00};   // >> Filename.TXT NULL  <<
 int FileCreate[] = {0x57, 0xab, 0x34};
 int FileOpen[] = {0x57,0xab,0x32};
-int BYTE_WRITE[] = {0x57,0xab,0x3c,0x29,0x00}; // >> 0x3c, dataLength,0x00 <<
-int WR_REQ_DATA[] 	= {0x57,0xAB,0x2D}; // 57,AB,2D,Data
+
+int BYTE_WRITE[] = {0x57,0xab,0x3c,0x14,0x00}; // >> 0x3c <<
+int WR_REQ_DATA[] 	= {0x57,0xAB,0x2D}; // 57,AB,2D
+char DataToCH376[] = "ddelay_msdelay_msela"; // data
+
 int BYTE_WR_GO[] ={0x57,0xab,0x3d};
 int FileClose[] = {0x57, 0xab, 0x36, 0x01};
 
@@ -356,8 +359,8 @@ int tempcur;
 int mapcur1;
 int mapcur2;
 // StrData
-char DataToCH376[] = "HOLA  ESTOS SON NUEVOS DATOS EN LA MEMORIA";
-char bufferHex[20];
+
+
 
 
 /*----------------------------------------------------------------------------*/
@@ -1132,36 +1135,17 @@ void ReadFile() { //readf
 }
 
 void DataToWrite() {
-int i = 0;
-sendUart(3);
-	
-	
-	
-  for( i = 0; i<strlen(DataToCH376); i++){
-		printf("%c",DataToCH376[i]);
- 
-  }
- 
-		
-	
-	
-
-
-
-}
-void LengthData(){
 	int i = 0;
-	
-//i =  strlen(DataToCH376) -1;
-	//BYTE_WRITE[3] = i;
-	
-//	itoa(i,bufferHex,16); 
-	//BYTE_WRITE[3] = bufferHex;
-	
-}
-void createFile() {
+	 // set Serial printf to Serial 3 (CH376)
+		delay_ms(50);
+  for( i = 0; i<strlen(DataToCH376); i++){  
+		printf("%c",DataToCH376[i]);  // write data to Ch376
+   }
+	 
+ }
 
-	  //  command_ = 1;
+void createFile(){
+	  //  command_ = 1;0           
   if (command_ == 1) {
     SendCH370(checkConnection, sizeof(checkConnection));
     command_++; //2
@@ -1190,14 +1174,14 @@ void createFile() {
 		delay_ms(500);
 		command_++; //10
   } else if (command_ == 6) {
-	//	LengthData();
-    SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
-    printf("Setting data length\r\n");
-    command_++; //12
-		delay_ms(50);
+	 SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
+	 printf("\nSetting data length\r\n");
+   command_++; //12
+	delay_ms(50);
   }
   else if (command_ == 7) {
 		DataToWrite();
+		sendUart(1);
     SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
 		DataToWrite();
 		printf("Writing data\r\n");
