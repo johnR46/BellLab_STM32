@@ -184,7 +184,8 @@ int FileCreate[] = {0x57, 0xab, 0x34};
 int FileOpen[] = {0x57,0xab,0x32};
 int BYTE_WRITE[] = {0x57,0xab,0x3c,0xFF,0x00}; // >> 0x3c, dataLength,0x00 <<
 int WR_REQ_DATA[] 	= {0x57,0xAB,0x2D}; // 57,AB,2D,Data
-char DataToCH376[] = "In the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists empl";
+char DataToCH376[] = "In the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists emplIn the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists emplInIn the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists emplIn the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists emplInIn the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists emplIn the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists empl";
+int BYTE_LOCATE[] = {0x57,0xAB,0x39,0xFF,0xFF,0xFF,0xFF};
 int BYTE_WR_GO[] ={0x57,0xab,0x3d};
 int FileClose[] = {0x57, 0xab, 0x36, 0x01};
 
@@ -289,6 +290,7 @@ const char* FileName_buffer = DataForWrite;
 //--- sd card---//
 void ReadFile(void);
 void createFile(void);
+
 void searchFile(void);
 void appendFile(void);
 void SendCH370(int data[], int);
@@ -300,8 +302,9 @@ void unicode_to_ASCII(void);
 void notepad(void);
 int mapCursor(int,int,int);
 int checkBit(int);
-void DataToWrite(void);
+void DataToWrite(int,int);
 void SetFilename(void);
+void UpdateFile(void); 
 
 
 
@@ -362,9 +365,11 @@ char strlast[20];
 int tempcur;
 int mapcur1;
 int mapcur2;
+int lenupdate = 0;
+int le = 0;
 // StrData
 
-char bufferHex[20];
+
 
 
 /*----------------------------------------------------------------------------*/
@@ -523,10 +528,12 @@ int main(void)
   printf("ok");
  stringToUnicodeAndSendToDisplay("APC");
   command_ = 1;
+	//command_ = 1;
   while (1) {
     // keyboard();
    // notepad();
    createFile();
+	// UpdateFile();
   }
 
 
@@ -1148,25 +1155,93 @@ void SetFilename(){
 }
 
 
-void DataToWrite() {
-int i = 0;
+void DataToWrite(int length,int count) {
+   int i = 0;
 	
-sendUart(3);
+   sendUart(3);
 	
 	
 	
-  for( i = 0; i<strlen(DataToCH376); i++){
+  for( i = length; i<abs(length - count); i++){
 		printf("%c",DataToCH376[i]);
  
   }
- 
-		
-	
 	
 
 
 
 }
+void UpdateFile(){
+sendUart(1);
+	
+le =	strlen(DataToCH376);
+	while(le >= 0 ){
+		
+
+  /*  SendCH370(checkConnection, sizeof(checkConnection));
+    command_++; //2
+    printf("Check Connection\r\n");
+		delay_ms(50);
+ 
+    SendCH370(setSDCard, sizeof(setSDCard));
+    printf("Set SD Card Mode\r\n");
+    command_++; //4
+		delay_ms(50);
+  
+    SendCH370(USBDiskMount, sizeof(USBDiskMount));
+    printf(" SendCommand R:%d\r\n", command_);
+    command_++; //6
+		delay_ms(50);
+  */
+	
+    SendCH370(SF1, sizeof(SF1));  
+		SetFilename();
+		SendCH370(SF2, sizeof(SF2));
+    printf("Set File Name\r\n");
+    command_++; //8
+		delay_ms(50);
+ 
+    SendCH370(FileOpen, sizeof(FileOpen));
+    delay_ms(50);
+		SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE)); // FF FF FF FF
+			printf("File Update\r\n"); 
+   
+		delay_ms(500);
+		command_++; //10
+  
+    SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
+    printf("Setting data length\r\n");
+    command_++; //12
+		delay_ms(500);
+
+
+	
+		//delay_ms(50);
+    SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
+		
+		delay_ms(500);
+		DataToWrite(0,255);
+	//	printf("\nWriting data\r\n");
+    command_++; //14
+		delay_ms(500);
+  
+    SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
+    printf("File Update\r\n");
+    command_++; //16
+		delay_ms(50);
+
+ 
+    SendCH370(FileClose, sizeof(FileClose));
+    printf("File Close\r\n");
+    command_++; //18
+		delay_ms(50);
+ 
+	le = le -255;
+
+
+}
+}
+
 
 void createFile() {
 
@@ -1197,34 +1272,43 @@ void createFile() {
     SendCH370(FileCreate, sizeof(FileCreate));
     // SendCH370(FileClose,sizeof(FileClose));
     printf("File Create\r\n"); //FileClose
-    
+		//  delay_ms(50);
+		//  SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE));
+   
 		delay_ms(500);
 		command_++; //10
-  } else if (command_ == 6) {
-    SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
-    printf("Setting data length\r\n");
-    command_++; //12
-		delay_ms(50);
-  }
-  else if (command_ == 7) {
-		DataToWrite();
-    SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
-		DataToWrite();
-		printf("Writing data\r\n");
-    command_++; //14
-		delay_ms(200);
-  } else if (command_ == 8) {
-    SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
-    printf("File Update\r\n");
-    command_++; //16
-		delay_ms(50);
-  }
-  else if (command_ == 9) {
+  } 
+	//else if (command_ == 6) {
+  //  SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
+   // printf("Setting data length\r\n");
+   // command_++; //12
+		//delay_ms(50);
+  //}
+ // else if (command_ == 7) {
+	//	DataToWrite();
+  //  SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
+	//	DataToWrite();
+	//	printf("Writing data\r\n");
+    //command_++; //14
+	//	delay_ms(200);
+ // } else if (command_ == 8) {
+  //  SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
+  //  printf("File Update\r\n");
+   // command_++; //16
+	//	delay_ms(50);
+ // }
+  else if (command_ == 6) {
     SendCH370(FileClose, sizeof(FileClose));
     printf("File Close\r\n");
     command_++; //18
 		delay_ms(50);
   }
+	
+	 else if (command_ == 7) {
+    UpdateFile();
+		  printf("File update complete\r\n");
+  }
+	
   menu_s();
   //  SendCH370(checkConnection,sizeof(checkConnection));
   if (USART_GetITStatus(USART3, USART_IT_RXNE) ) {
