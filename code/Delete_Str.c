@@ -17,7 +17,7 @@ void main() {
   int i = 0;
   printf("Enter Str : ");
 
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < 5; i++) {
     scanf("%c", &str[i]);
   }
   

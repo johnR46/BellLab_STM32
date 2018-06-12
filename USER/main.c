@@ -184,7 +184,7 @@ int FileCreate[] = {0x57, 0xab, 0x34};
 int FileOpen[] = {0x57,0xab,0x32};
 int BYTE_WRITE[] = {0x57,0xab,0x3c,0xFF,0x00}; // >> 0x3c, dataLength,0x00 <<
 int WR_REQ_DATA[] 	= {0x57,0xAB,0x2D}; // 57,AB,2D,Data
-char DataToCH376[] = "In the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists emplIn the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists emplInIn the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists emplIn the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists emplInIn the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists emplIn the future, at an underground subterranean base, the United Kingdom only has a couple of weeks before the city of Taipei, Taiwan falls to the Chinese. The British need soldiers fluent in both Chinese dialect as well as ruthless killers. Scientists empl";
+char DataToCH376[255]; // write data is 0 ot 255
 int BYTE_LOCATE[] = {0x57,0xAB,0x39,0xFF,0xFF,0xFF,0xFF};
 int BYTE_WR_GO[] ={0x57,0xab,0x3d};
 int FileClose[] = {0x57, 0xab, 0x36, 0x01};
@@ -289,7 +289,7 @@ const char* FileName_buffer = DataForWrite;
 
 //--- sd card---//
 void ReadFile(void);
-void createFile(void);
+void createFile(char *);
 
 void searchFile(void);
 void appendFile(void);
@@ -302,9 +302,10 @@ void unicode_to_ASCII(void);
 void notepad(void);
 int mapCursor(int,int,int);
 int checkBit(int);
-void DataToWrite(int,int);
+void DataToWrite(void);
 void SetFilename(void);
-void UpdateFile(void); 
+void FileWrite(char *name,char *str);
+// gobal value int start int end
 
 
 
@@ -532,7 +533,7 @@ int main(void)
   while (1) {
     // keyboard();
    // notepad();
-   createFile();
+   createFile("//AV.TXT");
 	// UpdateFile();
   }
 
@@ -1147,22 +1148,19 @@ void ReadFile() { //readf
 }
 void SetFilename(){
 	int i = 0;
-	sendUart(3);
-	for( i = 0; i<strlen(FileName); i++){
-		printf("%c",FileName[i]);
- 
-  }
+
+	
 }
 
 
-void DataToWrite(int length,int count) {
+void DataToWrite() {
    int i = 0;
 	
    sendUart(3);
 	
 	
 	
-  for( i = length; i<abs(length - count); i++){
+  for( i = 0; i < 255; i++){
 		printf("%c",DataToCH376[i]);
  
   }
@@ -1171,11 +1169,12 @@ void DataToWrite(int length,int count) {
 
 
 }
-void UpdateFile(){
+void FileWrite(char *name,char *str){
 sendUart(1);
 	
-le =	strlen(DataToCH376);
-	while(le >= 0 ){
+
+memset(DataToCH376,'\0',strlen(DataToCH376)); // clear data TO CH376
+strncpy(DataToCH376,str + ,
 		
 
   /*  SendCH370(checkConnection, sizeof(checkConnection));
@@ -1236,15 +1235,17 @@ le =	strlen(DataToCH376);
     command_++; //18
 		delay_ms(50);
  
-	le = le -255;
+
+
 
 
 }
-}
 
 
-void createFile() {
+void createFile(char *name) {
 
+	memset(FileName,'\0',strlen(FileName)); // clear name
+	strcpy(FileName,name);                  // set name
 	  //  command_ = 1;
   if (command_ == 1) {
     SendCH370(checkConnection, sizeof(checkConnection));
@@ -1263,7 +1264,11 @@ void createFile() {
 		delay_ms(50);
   } else if (command_ == 4) {
     SendCH370(SF1, sizeof(SF1));
-		SetFilename();
+		sendUart(3);
+		for( i = 0; i<strlen(FileName); i++){
+		printf("%c",FileName[i]);
+   }
+		sendUart(1);
 		SendCH370(SF2, sizeof(SF2));
     printf("Set File Name\r\n");
     command_++; //8
