@@ -20,7 +20,7 @@ int main () {
   }
   
     //for(i = 0;i<16;i++){
-    	printf("%c",dest[0][0]);
+    	printf("%s",dest[1]);
 	
 
 

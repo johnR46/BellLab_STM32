@@ -167,13 +167,13 @@ int command_ = 0;
 
 int SwitchEndFileName = 0;
 int endFileName = 0;
-// SD Card  global Function 
+// SD Card  global Function
 
 // SD Card global Value
 int ResetAll[] = {0x57, 0xab, 0x05};
 int checkConnection[] = {0x57, 0xab, 0x06, 0x57};
 int setSDCard[] = {0x57, 0xab, 0x15, 0x03}; // SD Card Mode
-int USBDiskMount[] = {0x57, 0xab, 0x31}; 
+int USBDiskMount[] = {0x57, 0xab, 0x31};
 //int setFileName[] = {0x57, 0xab, 0x2f,0x2f,0x41,0x56,0x2E,0x54,0x58,0x54,0x00};   // 57,ab,//Filename.TXTNULL
 int SF1[] = {0x57, 0xab};
 char FileName[] = "//AV.TXT";
@@ -181,12 +181,12 @@ int SF2[] = {0x00};
 
 
 int FileCreate[] = {0x57, 0xab, 0x34};
-int FileOpen[] = {0x57,0xab,0x32};
-int BYTE_WRITE[] = {0x57,0xab,0x3c,0xFF,0x00}; // >> 0x3c, dataLength,0x00 <<
-int WR_REQ_DATA[] 	= {0x57,0xAB,0x2D}; // 57,AB,2D,Data
-char DataToCH376[255]; // write data is 0 ot 255
-int BYTE_LOCATE[] = {0x57,0xAB,0x39,0xFF,0xFF,0xFF,0xFF};
-int BYTE_WR_GO[] ={0x57,0xab,0x3d};
+int FileOpen[] = {0x57, 0xab, 0x32};
+int BYTE_WRITE[] = {0x57, 0xab, 0x3c, 0xFF, 0x00}; // >> 0x3c, dataLength,0x00 <<
+int WR_REQ_DATA[]   = {0x57, 0xAB, 0x2D}; // 57,AB,2D,Data
+char DataToCH376[256]; // write data is 0 ot 255
+int BYTE_LOCATE[] = {0x57, 0xAB, 0x39, 0xFF, 0xFF, 0xFF, 0xFF};
+int BYTE_WR_GO[] = {0x57, 0xab, 0x3d};
 int FileClose[] = {0x57, 0xab, 0x36, 0x01};
 
 //int FileLength[] = {0x57, 0xab, 0x3c, 0x0d, 0x00};
@@ -300,11 +300,13 @@ void keyboard(void);
 // john function
 void unicode_to_ASCII(void);
 void notepad(void);
-int mapCursor(int,int,int);
+int mapCursor(int, int, int);
 int checkBit(int);
 void DataToWrite(void);
 void SetFilename(void);
-void FileWrite(char *name,char *str);
+void FileWrite(char *name, char *str);
+char str4096[4096];
+
 // gobal value int start int end
 
 
@@ -368,6 +370,9 @@ int mapcur1;
 int mapcur2;
 int lenupdate = 0;
 int le = 0;
+
+ int start = 0;
+  int end = 4096;
 // StrData
 
 
@@ -527,14 +532,14 @@ int main(void)
 
   printf("Status 115200 ok \r\n");
   printf("ok");
- stringToUnicodeAndSendToDisplay("APC");
+  stringToUnicodeAndSendToDisplay("APC");
   command_ = 1;
-	//command_ = 1;
+  //command_ = 1;
   while (1) {
     // keyboard();
-   // notepad();
-   createFile("//AV.TXT");
-	// UpdateFile();
+    // notepad();
+    createFile("//AV.TXT");
+    // UpdateFile();
   }
 
 
@@ -542,37 +547,37 @@ int main(void)
 }
 
 
-int  mapCursor(int P1,int P2,int P3){
-	if(P1!=0){
-	return	checkBit(P1);
-	}
-	else if(P2!=0){
-	return	checkBit(P2)+8;
-	}
-	else if(P3!=0){
-	return	checkBit(P3)+16;
-	}else{
-	return 0;
-	}
+int  mapCursor(int P1, int P2, int P3) {
+  if (P1 != 0) {
+    return  checkBit(P1);
+  }
+  else if (P2 != 0) {
+    return  checkBit(P2) + 8;
+  }
+  else if (P3 != 0) {
+    return  checkBit(P3) + 16;
+  } else {
+    return 0;
+  }
 }
-int checkBit(int input){
-	int i;
-	for(i = 0;i<=8;i++){	
-				if(input==1)
-				break;
-				input = input>>1;
-	}
-	return i;
+int checkBit(int input) {
+  int i;
+  for (i = 0; i <= 8; i++) {
+    if (input == 1)
+      break;
+    input = input >> 1;
+  }
+  return i;
 }
 
 void notepad() {
 
   if (cur == 20) {
     strcat(str1, str2);
-		memset(str2,'\0',strlen(str2));
+    memset(str2, '\0', strlen(str2));
 
     cur = 0;
-		mapcur1 = 0;
+    mapcur1 = 0;
     printf(" str size it  %d  is %s \n", strlen(str1), str1);
 
   }
@@ -582,11 +587,11 @@ void notepad() {
     if (uart2Buffer == 0xff && SeeHead == 0) {                              //-
       SeeHead = 1;                                                          //-
       countKey = 0;                                                         //-
-    }         
-                                                                           //-
-		if(countKey == 2 && uart2Buffer == 0xa4){
-			seeCur = 1;
-		}
+    }
+    //-
+    if (countKey == 2 && uart2Buffer == 0xa4) {
+      seeCur = 1;
+    }
     if (countKey >= 4 && countKey <= 6) {                                   //-
       bufferKey3digit[countKey - 4] = uart2Buffer;                          //-
     }
@@ -600,7 +605,7 @@ void notepad() {
   }
   if (countKey >= maxData) { //Recieve & checking key
     seeHead = 0;
- // printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+    // printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
 
     //printf("checkKey :%x\r\n",checkKeyError);
     if (checkKeyError == 0xff) { //check error key
@@ -608,7 +613,7 @@ void notepad() {
       countKey = 0;
       SeeHead = 0;
     }
-		
+
     //printf("%d\r\n",sizeof(mode_1)/sizeof(int));
     //////////////////////////////////menu selector ///////////////////////////////////
 
@@ -627,100 +632,100 @@ void notepad() {
       keyCode = 32;  // arrow up
     }
 
-		if(seeCur == 1){
-			mapcur = 	mapCursor(bufferKey3digit[0],bufferKey3digit[1],bufferKey3digit[2]);
-				if(mapcur <=  cur){
-					mapcur1 = mapcur;
-					statusmid = 1;
-					
-			}
-			else {
-				
-				mapcur1 = cur;
-			}
-		printf(" mapcur = %d \n ",mapcur1);
-		
-}
-		
- if (bufferKey3digit[0] == 0x80 && seeCur != 1) {
-			if(statusmid != 1){
-			  if(cur!=0){
-					str2[cur] = '\0';
-        			cur--;
-				}
-			}
+    if (seeCur == 1) {
+      mapcur =  mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+      if (mapcur <=  cur) {
+        mapcur1 = mapcur;
+        statusmid = 1;
+
+      }
+      else {
+
+        mapcur1 = cur;
+      }
+      printf(" mapcur = %d \n ", mapcur1);
+
     }
-		
-		if ((bufferKey3digit[0] != 0 || 	keyCode == 32		)) {
-			for ( i = 0; i < 255; i++) {
+
+    if (bufferKey3digit[0] == 0x80 && seeCur != 1) {
+      if (statusmid != 1) {
+        if (cur != 0) {
+          str2[cur] = '\0';
+          cur--;
+        }
+      }
+    }
+
+    if ((bufferKey3digit[0] != 0 ||   keyCode == 32   )) {
+      for ( i = 0; i < 255; i++) {
         if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
-  					if(statusmid != 1&& keyCode != 32 && bufferKey3digit[0] != 0x80  &&seeCur != 1 ){
-						str2[cur] = i;
-						cur++;
-							}
-						if(statusmid == 1  ){
-								printf("cursor = %d \t mapcur1 = %d\t  \n",cur,mapcur1);
-								strncpy(strfirst,str2,mapcur1);
-								strncpy(strlast,str2+mapcur1,strlen(str2)- mapcur1);
-								if(keyCode == 32){
-						  	ch[0] = 32;					 
-									mapcur1++;
-									cur++;
-							}
-	  				if(bufferKey3digit[0] == 0x80  &&seeCur != 1){
-							  ch[0] = '\0';
-								if(mapcur1!=0){
-									memset(strfirst + strlen(strfirst) -1,'\0',strlen(strfirst));
-									cur--;
-					   		  	    mapcur1--;
-								}	
-							}
-							
-							if(keyCode != 32 && bufferKey3digit[0] != 0x80  &&seeCur != 1 ){
-								ch[0] = i;
-								mapcur1++;
-								cur++;
-							}
-						    	strcat(strfirst,ch);
-					   		    strcat(strfirst,strlast);
-						 		strcpy(str2,strfirst);
-							    memset(strfirst,'\0',strlen(strfirst));
-								memset(strlast,'\0',strlen(strlast));
-								memset(ch,'\0',strlen(ch));
-						}
-						
+          if (statusmid != 1 && keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
+            str2[cur] = i;
+            cur++;
+          }
+          if (statusmid == 1  ) {
+            printf("cursor = %d \t mapcur1 = %d\t  \n", cur, mapcur1);
+            strncpy(strfirst, str2, mapcur1);
+            strncpy(strlast, str2 + mapcur1, strlen(str2) - mapcur1);
+            if (keyCode == 32) {
+              ch[0] = 32;
+              mapcur1++;
+              cur++;
+            }
+            if (bufferKey3digit[0] == 0x80  && seeCur != 1) {
+              ch[0] = '\0';
+              if (mapcur1 != 0) {
+                memset(strfirst + strlen(strfirst) - 1, '\0', strlen(strfirst));
+                cur--;
+                mapcur1--;
+              }
+            }
+
+            if (keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
+              ch[0] = i;
+              mapcur1++;
+              cur++;
+            }
+            strcat(strfirst, ch);
+            strcat(strfirst, strlast);
+            strcpy(str2, strfirst);
+            memset(strfirst, '\0', strlen(strfirst));
+            memset(strlast, '\0', strlen(strlast));
+            memset(ch, '\0', strlen(ch));
+          }
+
           break;
         }
       }
-			
-			if(mapcur1 >= cur){
-				statusmid = 0;
-				}
-   }
-		
 
-    if (keyCode == 32 && statusmid !=1 ) {
+      if (mapcur1 >= cur) {
+        statusmid = 0;
+      }
+    }
+
+
+    if (keyCode == 32 && statusmid != 1 ) {
       str2[cur] = 32;
       cur++;
     }
-		
-    printf("str2: %s : len %d\r\n",str2,strlen(str2));
+
+    printf("str2: %s : len %d\r\n", str2, strlen(str2));
     stringToUnicodeAndSendToDisplay(str2);
     countKey = 0;
     keyCode = 0;
-	seeCur = 0;
+    seeCur = 0;
   }
 
 }
 
 void unicode_to_ASCII() {
-    for ( i = 0; i < 255; i++) {
-        if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
+  for ( i = 0; i < 255; i++) {
+    if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
 
-        
-          break;
-        }
-      }
+
+      break;
+    }
+  }
 
 }
 
@@ -804,19 +809,19 @@ void stringToUnicodeAndSendToDisplay(char *string) {
       printf("Error\r\n");
     }
   }
-} */
+  } */
 
 /*
-void NextFile() {
+  void NextFile() {
   SendCH370(enumgo, sizeof(enumgo));
   //delay_ms(10);
   SendCH370(data0, sizeof(data0));
   //delay_ms(10);
   printf("Next File\r\n");
-}*/
+  }*/
 
 /*
-void searchFile() {
+  void searchFile() {
   command_ = 0;
   r_count = 0;
   SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
@@ -840,7 +845,7 @@ void searchFile() {
       searchStep++;//3
       SendCH370(USBDiskMount, sizeof(USBDiskMount));
       printf(" USB Disk Mount\r\n");
-      command_++; //	
+      command_++; //
       delay_ms(50);
     } else if (command_ == 4) {
       searchStep++;//5
@@ -926,10 +931,10 @@ void searchFile() {
         //printf("Preprrrr");
       }
     }
-    
+
   }
   printf("breaked\r\n");
-}
+  }
 
 */
 
@@ -982,7 +987,7 @@ void ReadFile() { //readf
     } else if (command_ == 4) {
 
       SendCH370(SF1, sizeof(SF1));
-			
+
       printf("Set file Name\r\n");
       command_++; //5
       delay_ms(50);
@@ -1146,95 +1151,114 @@ void ReadFile() { //readf
 
   }
 }
-void SetFilename(){
-	int i = 0;
+void SetFilename() {
+  int i = 0;
 
-	
+
 }
 
 
 void DataToWrite() {
-   int i = 0;
-	
-   sendUart(3);
-	
-	
-	
-  for( i = 0; i < 255; i++){
-		printf("%c",DataToCH376[i]);
- 
+  int i = 0;
+
+  sendUart(3);
+
+
+
+  for ( i = 0; i < 255; i++) {
+    printf("%c", DataToCH376[i]);
+
   }
-	
+
 
 
 
 }
-void FileWrite(char *name,char *str){
-sendUart(1);
-	
+void FileWrite(char *name, char *str) {
+  sendUart(1);
+   while (end != 0) {
+    memset(DataToCH376, '\0', strlen(DataToCH376)); // clear data TO CH376
+    strncat(DataToCH376, str + start + 256, 256);
+    //  printf("start :%d\n", start);
+    //  printf("end :%d\n", end);
+    //    printf("strlen DataToCH376 is %d\n", strlen(DataToCH376));
+    //  printf("DataToCH376 :%s\n", DataToCH376);
 
-memset(DataToCH376,'\0',strlen(DataToCH376)); // clear data TO CH376
-strncpy(DataToCH376,str + ,
+
+     SendCH370(SF1, sizeof(SF1));
+    sendUart(3);
+    for ( i = 0; i < strlen(FileName); i++) {
+      printf("%c", FileName[i]);
+    }
+    sendUart(1);
+    SendCH370(SF2, sizeof(SF2));
+    printf("Set File Name\r\n");
+    command_++; //8
+    delay_ms(50);
+
+    SendCH370(FileOpen, sizeof(FileOpen));
+    delay_ms(50);
+    SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE)); // FF FF FF FF
+    printf("File Update\r\n");
+
+    delay_ms(500);
+    command_++; //10
+
+    SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
+    printf("Setting data length\r\n");
+    command_++; //12
+    delay_ms(50);
+    //delay_ms(50);
+    SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
+    delay_ms(50);
+    sendUart(3);
+		for ( i = 0; i < 255; i++) {
+			printf("%c",DataToCH376[i]);
+		}
 		
+		sendUart(1);
+      printf("Writing data\r\n");
+    command_++; //14
+    delay_ms(500);
+
+    SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
+    printf("File Update\r\n");
+    command_++; //16
+    delay_ms(50);
+
+
+    SendCH370(FileClose, sizeof(FileClose));
+    printf("File Close\r\n");
+    command_++; //18
+    delay_ms(50);
+
+
+
+
+    memset(DataToCH376, '\0', 1);
+    start = start + 256;
+    end -= 256;
+
+
+
+  }
 
   /*  SendCH370(checkConnection, sizeof(checkConnection));
     command_++; //2
     printf("Check Connection\r\n");
-		delay_ms(50);
- 
+    delay_ms(50);
+
     SendCH370(setSDCard, sizeof(setSDCard));
     printf("Set SD Card Mode\r\n");
     command_++; //4
-		delay_ms(50);
-  
+    delay_ms(50);
+
     SendCH370(USBDiskMount, sizeof(USBDiskMount));
     printf(" SendCommand R:%d\r\n", command_);
     command_++; //6
-		delay_ms(50);
-  */
-	
-    SendCH370(SF1, sizeof(SF1));  
-		SetFilename();
-		SendCH370(SF2, sizeof(SF2));
-    printf("Set File Name\r\n");
-    command_++; //8
-		delay_ms(50);
- 
-    SendCH370(FileOpen, sizeof(FileOpen));
     delay_ms(50);
-		SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE)); // FF FF FF FF
-			printf("File Update\r\n"); 
-   
-		delay_ms(500);
-		command_++; //10
-  
-    SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
-    printf("Setting data length\r\n");
-    command_++; //12
-		delay_ms(500);
+  */
 
-
-	
-		//delay_ms(50);
-    SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
-		
-		delay_ms(500);
-		DataToWrite(0,255);
-	//	printf("\nWriting data\r\n");
-    command_++; //14
-		delay_ms(500);
-  
-    SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
-    printf("File Update\r\n");
-    command_++; //16
-		delay_ms(50);
-
- 
-    SendCH370(FileClose, sizeof(FileClose));
-    printf("File Close\r\n");
-    command_++; //18
-		delay_ms(50);
- 
 
 
 
@@ -1243,77 +1267,79 @@ strncpy(DataToCH376,str + ,
 
 
 void createFile(char *name) {
+strcpy(str4096,"The Company runs official accounts on social mediassssss  understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourTheThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourTheThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourTheThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe");
 
-	memset(FileName,'\0',strlen(FileName)); // clear name
-	strcpy(FileName,name);                  // set name
-	  //  command_ = 1;
+
+  memset(FileName, '\0', strlen(FileName)); // clear name
+  strcpy(FileName, name);                 // set name
+  //  command_ = 1;
   if (command_ == 1) {
     SendCH370(checkConnection, sizeof(checkConnection));
     command_++; //2
     printf("Check Connection\r\n");
-		delay_ms(50);
+    delay_ms(50);
   } else if (command_ == 2) {
     SendCH370(setSDCard, sizeof(setSDCard));
     printf("Set SD Card Mode\r\n");
     command_++; //4
-		delay_ms(50);
+    delay_ms(50);
   } else if (command_ == 3) {
     SendCH370(USBDiskMount, sizeof(USBDiskMount));
     printf(" SendCommand R:%d\r\n", command_);
     command_++; //6
-		delay_ms(50);
+    delay_ms(50);
   } else if (command_ == 4) {
     SendCH370(SF1, sizeof(SF1));
-		sendUart(3);
-		for( i = 0; i<strlen(FileName); i++){
-		printf("%c",FileName[i]);
-   }
-		sendUart(1);
-		SendCH370(SF2, sizeof(SF2));
+    sendUart(3);
+    for ( i = 0; i < strlen(FileName); i++) {
+      printf("%c", FileName[i]);
+    }
+    sendUart(1);
+    SendCH370(SF2, sizeof(SF2));
     printf("Set File Name\r\n");
     command_++; //8
-		delay_ms(50);
+    delay_ms(50);
   } else if (command_ == 5) {
     SendCH370(FileCreate, sizeof(FileCreate));
     // SendCH370(FileClose,sizeof(FileClose));
     printf("File Create\r\n"); //FileClose
-		//  delay_ms(50);
-		//  SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE));
-   
-		delay_ms(500);
-		command_++; //10
-  } 
-	//else if (command_ == 6) {
+    //  delay_ms(50);
+    //  SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE));
+
+    delay_ms(500);
+    command_++; //10
+  }
+  //else if (command_ == 6) {
   //  SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
-   // printf("Setting data length\r\n");
-   // command_++; //12
-		//delay_ms(50);
+  // printf("Setting data length\r\n");
+  // command_++; //12
+  //delay_ms(50);
   //}
- // else if (command_ == 7) {
-	//	DataToWrite();
+  // else if (command_ == 7) {
+  //  DataToWrite();
   //  SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
-	//	DataToWrite();
-	//	printf("Writing data\r\n");
-    //command_++; //14
-	//	delay_ms(200);
- // } else if (command_ == 8) {
+  //  DataToWrite();
+  //  printf("Writing data\r\n");
+  //command_++; //14
+  //  delay_ms(200);
+  // } else if (command_ == 8) {
   //  SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
   //  printf("File Update\r\n");
-   // command_++; //16
-	//	delay_ms(50);
- // }
+  // command_++; //16
+  //  delay_ms(50);
+  // }
   else if (command_ == 6) {
     SendCH370(FileClose, sizeof(FileClose));
     printf("File Close\r\n");
     command_++; //18
-		delay_ms(50);
+    delay_ms(50);
   }
-	
-	 else if (command_ == 7) {
-    UpdateFile();
-		  printf("File update complete\r\n");
+
+  else if (command_ == 7) {
+  FileWrite("\\AV.TxT",str4096);
+    printf("File update complete\r\n");
   }
-	
+
   menu_s();
   //  SendCH370(checkConnection,sizeof(checkConnection));
   if (USART_GetITStatus(USART3, USART_IT_RXNE) ) {
@@ -1378,6 +1404,7 @@ void menu_s() {
     if (countKey >= 4 && countKey <= 6) {                                   //-
       bufferKey3digit[countKey - 4] = uart2Buffer;                          //-
     }
+
     if (countKey == 2) //checkKeyError
     {
       checkKeyError = uart2Buffer;
@@ -1496,12 +1523,12 @@ void menu_s() {
         setFileNameLength = 5;
         while (prepareNameToOpen[i] != '\0') {
           setFileNameLength++;
-        //  setFileName[i + 5] = (int)prepareNameToOpen[i];
-       //   printf("- %x ", setFileName[i + 5]);
+          //  setFileName[i + 5] = (int)prepareNameToOpen[i];
+          //   printf("- %x ", setFileName[i + 5]);
           i++;
         }
         setFileNameLength++;
-     //   setFileName[i + 5] = 0x00;
+        //   setFileName[i + 5] = 0x00;
         i = 0;
         seaching = 0;
         openFileStatus = 1;

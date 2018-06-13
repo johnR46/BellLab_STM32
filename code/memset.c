@@ -2,12 +2,16 @@
 #include <string.h>
 
 int main () {
-   char dest[] = "oldstring";
-   const char src[]  = "newstring";
+   char str[50]; // 
+   char dest[10];  // 5
 
-   printf("Before memmove dest = %s, src = %s\n", dest, src);
-   memmove(dest, src, 9);
-   printf("After memmove dest = %s, src = %s\n", dest, src);
-
+   strcpy(str,"This is string.h library function");
+   puts(str);
+   
+   memset(str,'0',7);
+   
+   
+   
+   printf("%s",str);
    return(0);
 }
