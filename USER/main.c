@@ -183,6 +183,11 @@ int SF2[] = {0x00};
 int FileCreate[] = {0x57, 0xab, 0x34};
 int FileOpen[] = {0x57, 0xab, 0x32};
 int BYTE_WRITE[] = {0x57, 0xab, 0x3c, 0xFF, 0x00}; // >> 0x3c, dataLength,0x00 <<
+int BY1_WRITE[] = {0x57,0xab,0x3c};
+int BY2_WRITE[] = {0x00};
+int BY_3[] = {0};
+
+
 int WR_REQ_DATA[]   = {0x57, 0xAB, 0x2D}; // 57,AB,2D,Data
 char DataToCH376[256]; // write data is 0 ot 255
 int BYTE_LOCATE[] = {0x57, 0xAB, 0x39, 0xFF, 0xFF, 0xFF, 0xFF};
@@ -311,6 +316,7 @@ char str4096[4096];
 
 
 
+
 //-----------------------------------mode--------------------------------//
 
 /* Private variables ---------------------------------------------------------*/
@@ -369,10 +375,11 @@ int tempcur;
 int mapcur1;
 int mapcur2;
 int lenupdate = 0;
-int le = 0;
-
+#define size_buff 255
+int len = 0;
  int start = 0;
-  int end = 4096;
+ char *p;
+  //int end = 4096;
 // StrData
 
 
@@ -1176,32 +1183,35 @@ void DataToWrite() {
 }
 void FileWrite(char *name, char *str) {
   sendUart(1);
-   while (end != 0) {
-    memset(DataToCH376, '\0', strlen(DataToCH376)); // clear data TO CH376
-    strncat(DataToCH376, str + start + 256, 256);
-    //  printf("start :%d\n", start);
-    //  printf("end :%d\n", end);
-    //    printf("strlen DataToCH376 is %d\n", strlen(DataToCH376));
-    //  printf("DataToCH376 :%s\n", DataToCH376);
-
-
+	 p = str;
+	len = strlen(str);
+	
+   while (len>=size_buff) {
+    memset(DataToCH376,0, strlen(DataToCH376)); // clear data TO CH376
+    strncpy(DataToCH376,p,size_buff);
+		   p+=size_buff;
+		   len-=size_buff;
+		//printf("%s\n",DataToCH376);
+	//	printf("string dest = %d\n",strlen(DataToCH376));
+	//	printf("string it is  = %d\n",k);
+		 
      SendCH370(SF1, sizeof(SF1));
     sendUart(3);
-    for ( i = 0; i < strlen(FileName); i++) {
-      printf("%c", FileName[i]);
-    }
+    //for ( i = 0; i < strlen(FileName); i++) {
+      printf("%s", FileName);
+    //}
     sendUart(1);
     SendCH370(SF2, sizeof(SF2));
-    printf("Set File Name\r\n");
+   // printf("Set File Name\r\n");
     command_++; //8
     delay_ms(50);
 
     SendCH370(FileOpen, sizeof(FileOpen));
     delay_ms(50);
     SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE)); // FF FF FF FF
-    printf("File Update\r\n");
+  //  printf("File Update\r\n");
 
-    delay_ms(500);
+    delay_ms(50);
     command_++; //10
 
     SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
@@ -1212,54 +1222,108 @@ void FileWrite(char *name, char *str) {
     SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
     delay_ms(50);
     sendUart(3);
-		for ( i = 0; i < 255; i++) {
-			printf("%c",DataToCH376[i]);
-		}
+		//for ( i = 0; i < strlen(DataToCH376); i++) {
+			printf("%s",DataToCH376);
+		//}
 		
 		sendUart(1);
-      printf("Writing data\r\n");
+   //   printf("Writing data\r\n");
     command_++; //14
     delay_ms(500);
 
     SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
-    printf("File Update\r\n");
+  //  printf("File Update\r\n");
     command_++; //16
     delay_ms(50);
 
 
     SendCH370(FileClose, sizeof(FileClose));
-    printf("File Close\r\n");
+  //  printf("File Close\r\n");
     command_++; //18
     delay_ms(50);
 
 
 
 
-    memset(DataToCH376, '\0', 1);
-    start = start + 256;
-    end -= 256;
-
-
+   
 
   }
-
-  /*  SendCH370(checkConnection, sizeof(checkConnection));
-    command_++; //2
-    printf("Check Connection\r\n");
+	 if(len>0){
+	 
+	  memset(DataToCH376,0, strlen(DataToCH376)); // clear data TO CH376
+    strncpy(DataToCH376,p,len);
+	//	printf("string dest = %d\n",strlen(DataToCH376));
+     SendCH370(SF1, sizeof(SF1));
+      sendUart(3);
+   // for ( i = 0; i < strlen(FileName); i++) {
+      printf("%s", FileName);
+    //}
+    sendUart(1);
+    SendCH370(SF2, sizeof(SF2));
+//    printf("Set File Name\r\n");
+    command_++; //8
     delay_ms(50);
 
-    SendCH370(setSDCard, sizeof(setSDCard));
-    printf("Set SD Card Mode\r\n");
-    command_++; //4
+    SendCH370(FileOpen, sizeof(FileOpen));
+    delay_ms(50);
+    SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE)); // FF FF FF FF
+   // printf("File Update\r\n");
+
+    delay_ms(50);
+    command_++; //10
+		
+		
+      sendUart(1);
+      SendCH370(BY1_WRITE, sizeof(BY1_WRITE));
+     // sendUart(3);
+    //for ( i = 0; i < strlen(FileName); i++) {
+		BY_3[0] = len;
+     // printf("%x",len);
+		 SendCH370(BY_3, sizeof(BY_3));
+    //}
+    sendUart(1);
+    SendCH370(BY2_WRITE, sizeof(BY2_WRITE));
+   // printf("Set File Name\r\n");
+    command_++; //8
     delay_ms(50);
 
-    SendCH370(USBDiskMount, sizeof(USBDiskMount));
-    printf(" SendCommand R:%d\r\n", command_);
-    command_++; //6
+
+
+   // SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
+   // printf("Setting data length\r\n");
+    command_++; //12
     delay_ms(50);
-  */
+    //delay_ms(50);
+    SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
+    delay_ms(50);
+    sendUart(3);
+	//	for ( i = 0; i < strlen(DataToCH376); i++) {
+			printf("%s",DataToCH376);
+	//	}
+		
+		sendUart(1);
+  //    printf("Writing data\r\n");
+    command_++; //14
+    delay_ms(50);
+
+    SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
+    //printf("File Update\r\n");
+    command_++; //16
+    delay_ms(50);
 
 
+    SendCH370(FileClose, sizeof(FileClose));
+  //  printf("File Close\r\n");
+    command_++; //18
+    delay_ms(50);
+	}
+
+
+	
+	 
+	
+
+ 
 
 
 
@@ -1267,8 +1331,8 @@ void FileWrite(char *name, char *str) {
 
 
 void createFile(char *name) {
-strcpy(str4096,"The Company runs official accounts on social mediassssss  understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourTheThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourTheThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourTheThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe Company runs official accounts on social media by understanding that social media is a place for communication based on a tie among individuals and that information is disclosed to the public and cannot be completely eliminated once dispatched, encourThe");
 
+	strcpy(str4096,"California Princeton University Genre Sword and planet Notable works Gor novel series Spouse Bernice L. Green (1956–present) Children John David Jennifer Relatives John Frederick Lange, Sr. (father) Almyra D. Lange née Taylor (mother) John Norman is the pen name of John Frederick Lange, Jr. (born June 3, 1931), who is the author of the Gor series of fantasy novels, and a professor of philosophy.Contents 1 Background 2 Academic career 3 Writing career 4 Themes 4.1 Gorean subculture 5 Works 5.1 Fiction 5.1.1 Gor series 5.1.2 Telnarian Histories series 5.1.3 Other novels 5.1.4 Short-story collections 5.2 Nonfiction 6 Notes 7 External links Background John Lange was born in Chicago, Illinois, to John Frederick Lange and Almyra D. Lange née Taylor.He began his academic career in the early 1950s, earning a Bachelor of Arts degree from the University of Nebraska in 1953, and his Master of Arts degree from the University of Southern California in 1957. While at USC he married Bernice L. Green on January 14, 1956. The couple have three children: John, David, and Jennifer.");
 
   memset(FileName, '\0', strlen(FileName)); // clear name
   strcpy(FileName, name);                 // set name

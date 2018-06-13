@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Jun 13 09:13:05 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Jun 13 19:27:56 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -313,13 +313,13 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
+<P><STRONG><a name="[56]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FileWrite
+</UL>
+
 <P><STRONG><a name="[55]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFile
 <LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FileWrite
-</UL>
-
-<P><STRONG><a name="[56]"></a>strncat</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, strncat.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FileWrite
 </UL>
 
 <P><STRONG><a name="[7e]"></a>strcpy</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, strcpy.o(.text))
@@ -360,13 +360,13 @@ Global Symbols
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 </UL>
 
-<P><STRONG><a name="[53]"></a>FileWrite</STRONG> (Thumb, 414 bytes, Stack size 0 bytes, main.o(i.FileWrite))
+<P><STRONG><a name="[53]"></a>FileWrite</STRONG> (Thumb, 614 bytes, Stack size 0 bytes, main.o(i.FileWrite))
 <BR><BR>[Calls]<UL><LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sendUart
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
-<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncat
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFile
