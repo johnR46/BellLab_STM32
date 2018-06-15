@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Jun 13 19:27:56 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Jun 14 15:41:24 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -313,7 +313,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[56]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
+<P><STRONG><a name="[57]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FileWrite
 </UL>
 
@@ -360,13 +360,13 @@ Global Symbols
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 </UL>
 
-<P><STRONG><a name="[53]"></a>FileWrite</STRONG> (Thumb, 614 bytes, Stack size 0 bytes, main.o(i.FileWrite))
+<P><STRONG><a name="[53]"></a>FileWrite</STRONG> (Thumb, 860 bytes, Stack size 0 bytes, main.o(i.FileWrite))
 <BR><BR>[Calls]<UL><LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sendUart
-<LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
-<LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
+<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
+<LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFile
@@ -476,7 +476,7 @@ Global Symbols
 <P><STRONG><a name="[6]"></a>SVC_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f10x_it.o(i.SVC_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
-<P><STRONG><a name="[57]"></a>SendCH370</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.SendCH370))
+<P><STRONG><a name="[58]"></a>SendCH370</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.SendCH370))
 <BR><BR>[Calls]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SendData
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetFlagStatus
 </UL>
@@ -575,7 +575,7 @@ Global Symbols
 
 <P><STRONG><a name="[66]"></a>USART_GetFlagStatus</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_GetFlagStatus))
 <BR><BR>[Called By]<UL><LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
-<LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
+<LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 </UL>
 
 <P><STRONG><a name="[81]"></a>USART_GetITStatus</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_GetITStatus))
@@ -606,7 +606,7 @@ Global Symbols
 
 <P><STRONG><a name="[65]"></a>USART_SendData</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_SendData))
 <BR><BR>[Called By]<UL><LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
-<LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
+<LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 </UL>
 
 <P><STRONG><a name="[5]"></a>UsageFault_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f10x_it.o(i.UsageFault_Handler))
@@ -616,7 +616,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
 </UL>
 
-<P><STRONG><a name="[58]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, printf5.o(i.__0printf$5))
+<P><STRONG><a name="[56]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, printf5.o(i.__0printf$5))
 <BR><BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;menu_s
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -653,9 +653,9 @@ Global Symbols
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 <LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sendUart
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;menu_s
-<LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
+<LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 <LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FileWrite
-<LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
@@ -704,7 +704,7 @@ Global Symbols
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_SPI
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_Configuration
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
-<LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
@@ -713,7 +713,7 @@ Global Symbols
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;caseMenu
-<LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFile
@@ -742,7 +742,7 @@ Global Symbols
 <P><STRONG><a name="[89]"></a>stringToUnicodeAndSendToDisplay</STRONG> (Thumb, 162 bytes, Stack size 0 bytes, main.o(i.stringToUnicodeAndSendToDisplay))
 <BR><BR>[Calls]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configDisplay
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
-<LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;menu_s
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main

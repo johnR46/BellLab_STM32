@@ -183,7 +183,7 @@ int SF2[] = {0x00};
 int FileCreate[] = {0x57, 0xab, 0x34};
 int FileOpen[] = {0x57, 0xab, 0x32};
 int BYTE_WRITE[] = {0x57, 0xab, 0x3c, 0xFF, 0x00}; // >> 0x3c, dataLength,0x00 <<
-int BY1_WRITE[] = {0x57,0xab,0x3c};
+int BY1_WRITE[] = {0x57, 0xab, 0x3c};
 int BY2_WRITE[] = {0x00};
 int BY_3[] = {0};
 
@@ -377,9 +377,9 @@ int mapcur2;
 int lenupdate = 0;
 #define size_buff 255
 int len = 0;
- int start = 0;
- char *p;
-  //int end = 4096;
+int start = 0;
+char *p;
+//int end = 4096;
 // StrData
 
 
@@ -1183,147 +1183,216 @@ void DataToWrite() {
 }
 void FileWrite(char *name, char *str) {
   sendUart(1);
-	 p = str;
-	len = strlen(str);
+  p = str;
+  len = strlen(str);
 	
-   while (len>=size_buff) {
-    memset(DataToCH376,0, strlen(DataToCH376)); // clear data TO CH376
-    strncpy(DataToCH376,p,size_buff);
-		   p+=size_buff;
-		   len-=size_buff;
-		//printf("%s\n",DataToCH376);
-	//	printf("string dest = %d\n",strlen(DataToCH376));
-	//	printf("string it is  = %d\n",k);
-		 
-     SendCH370(SF1, sizeof(SF1));
+	printf("str is len = %d\n\n",len);
+  if (len < 255 ) {
+
+    memset(DataToCH376, 0, strlen(DataToCH376)); // clear data TO CH376
+    strncpy(DataToCH376, p, len);
+		len-=size_buff;
+    //  printf("string dest = %d\n",strlen(DataToCH376));
+    SendCH370(SF1, sizeof(SF1));
     sendUart(3);
-    //for ( i = 0; i < strlen(FileName); i++) {
-      printf("%s", FileName);
+    // for ( i = 0; i < strlen(FileName); i++) {
+   printf("%s", FileName);
     //}
     sendUart(1);
     SendCH370(SF2, sizeof(SF2));
-   // printf("Set File Name\r\n");
-    command_++; //8
+    //    printf("Set File Name\r\n");
+    
     delay_ms(50);
 
     SendCH370(FileOpen, sizeof(FileOpen));
     delay_ms(50);
     SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE)); // FF FF FF FF
-  //  printf("File Update\r\n");
+    // printf("File Update\r\n");
 
     delay_ms(50);
-    command_++; //10
-
-    SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
-    printf("Setting data length\r\n");
-    command_++; //12
-    delay_ms(50);
-    //delay_ms(50);
-    SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
-    delay_ms(50);
-    sendUart(3);
-		//for ( i = 0; i < strlen(DataToCH376); i++) {
-			printf("%s",DataToCH376);
-		//}
-		
-		sendUart(1);
-   //   printf("Writing data\r\n");
-    command_++; //14
-    delay_ms(500);
-
-    SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
-  //  printf("File Update\r\n");
-    command_++; //16
-    delay_ms(50);
 
 
-    SendCH370(FileClose, sizeof(FileClose));
-  //  printf("File Close\r\n");
-    command_++; //18
-    delay_ms(50);
-
-
-
-
-   
-
-  }
-	 if(len>0){
-	 
-	  memset(DataToCH376,0, strlen(DataToCH376)); // clear data TO CH376
-    strncpy(DataToCH376,p,len);
-	//	printf("string dest = %d\n",strlen(DataToCH376));
-     SendCH370(SF1, sizeof(SF1));
-      sendUart(3);
-   // for ( i = 0; i < strlen(FileName); i++) {
-      printf("%s", FileName);
-    //}
     sendUart(1);
-    SendCH370(SF2, sizeof(SF2));
-//    printf("Set File Name\r\n");
-    command_++; //8
-    delay_ms(50);
-
-    SendCH370(FileOpen, sizeof(FileOpen));
-    delay_ms(50);
-    SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE)); // FF FF FF FF
-   // printf("File Update\r\n");
-
-    delay_ms(50);
-    command_++; //10
-		
-		
-      sendUart(1);
-      SendCH370(BY1_WRITE, sizeof(BY1_WRITE));
-     // sendUart(3);
+    SendCH370(BY1_WRITE, sizeof(BY1_WRITE));
+    // sendUart(3);
     //for ( i = 0; i < strlen(FileName); i++) {
-		BY_3[0] = len;
-     // printf("%x",len);
-		 SendCH370(BY_3, sizeof(BY_3));
+    BY_3[0] = len;
+    // printf("%x",len);
+    SendCH370(BY_3, sizeof(BY_3));
     //}
     sendUart(1);
     SendCH370(BY2_WRITE, sizeof(BY2_WRITE));
-   // printf("Set File Name\r\n");
-    command_++; //8
+    // printf("Set File Name\r\n");
     delay_ms(50);
 
 
 
-   // SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
-   // printf("Setting data length\r\n");
-    command_++; //12
+    // SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
+    // printf("Setting data length\r\n");
     delay_ms(50);
     //delay_ms(50);
     SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
     delay_ms(50);
     sendUart(3);
-	//	for ( i = 0; i < strlen(DataToCH376); i++) {
-			printf("%s",DataToCH376);
-	//	}
-		
-		sendUart(1);
-  //    printf("Writing data\r\n");
-    command_++; //14
+    //  for ( i = 0; i < strlen(DataToCH376); i++) {
+    printf("%s", DataToCH376);
+    //  }
+
+    sendUart(1);
+    //    printf("Writing data\r\n");
     delay_ms(50);
 
     SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
     //printf("File Update\r\n");
-    command_++; //16
     delay_ms(50);
 
 
     SendCH370(FileClose, sizeof(FileClose));
-  //  printf("File Close\r\n");
-    command_++; //18
+    //  printf("File Close\r\n");
     delay_ms(50);
+
+ printf("strlen is DatatoCH376 = %d\r\n",strlen(DataToCH376));
+ printf("len is str = %d\n",len);
+ 
+ command_++;
+  }
+
+  while (len >= size_buff ) {
+    memset(DataToCH376, 0, strlen(DataToCH376)); // clear data TO CH376
+    strncpy(DataToCH376,p, size_buff+1);
+     //printf("%s\n",DataToCH376);
+    //  printf("string dest = %d\n",strlen(DataToCH376));
+    //  printf("string it is  = %d\n",k);
+
+    SendCH370(SF1, sizeof(SF1));
+    sendUart(3);
+    //for ( i = 0; i < strlen(FileName); i++) {
+    printf("%s", FileName);
+    //}
+    sendUart(1);
+    SendCH370(SF2, sizeof(SF2));
+    // printf("Set File Name\r\n");
+    delay_ms(50);
+
+    SendCH370(FileOpen, sizeof(FileOpen));
+    delay_ms(100);
+    SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE)); // FF FF FF FF
+    //  printf("File Update\r\n");
+
+    delay_ms(100);
+
+    SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
+    printf("Setting data length\r\n");
+    delay_ms(100);
+    //delay_ms(50);
+    SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
+    delay_ms(100);
+    sendUart(3);
+    //for ( i = 0; i < strlen(DataToCH376); i++) {
+    printf("%s", DataToCH376);
+    //}
+
+    sendUart(1);
+    //   printf("Writing data\r\n");
+    delay_ms(100);
+
+    SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
+    //  printf("File Update\r\n");
+    delay_ms(100);
+
+
+    SendCH370(FileClose, sizeof(FileClose));
+    //  printf("File Close\r\n");
+    delay_ms(100);
+
+ command_++;
+
+	 p += size_buff;
+   len -= size_buff;
+	 
+ printf("\nstrlen2 = %d\r\n",strlen(DataToCH376));
+ printf("len2 = %d\n",len);
+ 
+
+
+
+  }
+  if (len > 0) {
+
+    memset(DataToCH376, 0, strlen(DataToCH376)); // clear data TO CH376
+    strncpy(DataToCH376,p, len);
+		p+=len;
+		
+    //  printf("string dest = %d\n",strlen(DataToCH376));
+    SendCH370(SF1, sizeof(SF1));
+    sendUart(3);
+    // for ( i = 0; i < strlen(FileName); i++) {
+    printf("%s", FileName);
+    //}
+    sendUart(1);
+    SendCH370(SF2, sizeof(SF2));
+    //    printf("Set File Name\r\n");
+    delay_ms(50);
+
+    SendCH370(FileOpen, sizeof(FileOpen));
+    delay_ms(50);
+    SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE)); // FF FF FF FF
+    // printf("File Update\r\n");
+
+    delay_ms(50); //10
+
+
+    sendUart(1);
+    SendCH370(BY1_WRITE, sizeof(BY1_WRITE));
+    // sendUart(3);
+    //for ( i = 0; i < strlen(FileName); i++) {
+    BY_3[0] = len;
+    // printf("%x",len);
+    SendCH370(BY_3, sizeof(BY_3));
+    //}
+    sendUart(1);
+    SendCH370(BY2_WRITE, sizeof(BY2_WRITE));
+    // printf("Set File Name\r\n");
+    
+    delay_ms(50);
+
+
+
+    // SendCH370(BYTE_WRITE, sizeof(BYTE_WRITE));
+    // printf("Setting data length\r\n");
+    delay_ms(50);
+    //delay_ms(50);
+    SendCH370(WR_REQ_DATA, sizeof(WR_REQ_DATA));
+    delay_ms(50);
+    sendUart(3);
+    //  for ( i = 0; i < strlen(DataToCH376); i++) {
+    printf("%s", DataToCH376);
+    //  }
+
+    sendUart(1);
+    //    printf("Writing data\r\n");
+    delay_ms(50);
+
+    SendCH370(BYTE_WR_GO, sizeof(BYTE_WR_GO));
+    //printf("File Update\r\n");
+    delay_ms(50);
+
+
+    SendCH370(FileClose, sizeof(FileClose));
+    //  printf("File Close\r\n");
+    delay_ms(50);
+   printf("strlen3  = %d\r\n",strlen(DataToCH376));
+		printf("len3  = %d\n",len);
+ command_++;
+
 	}
 
 
-	
-	 
-	
 
- 
+
+
+
+
 
 
 
@@ -1332,7 +1401,7 @@ void FileWrite(char *name, char *str) {
 
 void createFile(char *name) {
 
-	strcpy(str4096,"California Princeton University Genre Sword and planet Notable works Gor novel series Spouse Bernice L. Green (1956–present) Children John David Jennifer Relatives John Frederick Lange, Sr. (father) Almyra D. Lange née Taylor (mother) John Norman is the pen name of John Frederick Lange, Jr. (born June 3, 1931), who is the author of the Gor series of fantasy novels, and a professor of philosophy.Contents 1 Background 2 Academic career 3 Writing career 4 Themes 4.1 Gorean subculture 5 Works 5.1 Fiction 5.1.1 Gor series 5.1.2 Telnarian Histories series 5.1.3 Other novels 5.1.4 Short-story collections 5.2 Nonfiction 6 Notes 7 External links Background John Lange was born in Chicago, Illinois, to John Frederick Lange and Almyra D. Lange née Taylor.He began his academic career in the early 1950s, earning a Bachelor of Arts degree from the University of Nebraska in 1953, and his Master of Arts degree from the University of Southern California in 1957. While at USC he married Bernice L. Green on January 14, 1956. The couple have three children: John, David, and Jennifer.");
+  strcpy(str4096, "California Princeton University Genre Sword and planet Notable works Gor novel series Spouse Bernice L. Green (1956–present) Children John David Jennifer Relatives John Frederick Lange, Sr. (father) Almyra D. Lange née Taylor (mother) John Norman is the pen name of John Frederick Lange, Jr. (born June 3, 1931), who is the author of the Gor series of fantasy novels, and a professor of philosophy.Contents 1 Background 2 Academic career 3 Writing career 4 Themes 4.1 Gorean subculture 5 Works 5.1 Fiction 5.1.1 Gor series 5.1.2 Telnarian Histories series 5.1.3 Other novels 5.1.4 Short-story collections 5.2 Nonfiction 6 Notes 7 External links Background John Lange was born in Chicago, Illinois, to John Frederick Lange and Almyra D. Lange née Taylor.He began his academic career in the early 1950s, earning a Bachelor of Arts degree from the University of Nebraska in 1953, and his Master of Arts degree from the University of Southern California in 1957. While at USC he married Bernice L. Green on January 14, 1956. The couple have three children: John, David, and Jennifer.");
 
   memset(FileName, '\0', strlen(FileName)); // clear name
   strcpy(FileName, name);                 // set name
@@ -1400,7 +1469,7 @@ void createFile(char *name) {
   }
 
   else if (command_ == 7) {
-  FileWrite("\\AV.TxT",str4096);
+    FileWrite("\\AV.TxT", str4096);
     printf("File update complete\r\n");
   }
 
