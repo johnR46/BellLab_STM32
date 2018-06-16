@@ -266,7 +266,6 @@ void changeBuatRate(void);
 void setFilename(char *name);
 
 // john function
-void unicode_to_ASCII(void);
 void notepad(void);
 int mapCursor(int, int, int);
 int checkBit(int);
@@ -324,6 +323,11 @@ char strlast[20];
 int tempcur;
 int mapcur1;
 int mapcur2;
+char *L;
+int shiftpoint = 0;
+int point =0;
+char left[22];
+char right[22];
 
 
 /*----------------------------------------------------------------------------*/
@@ -445,7 +449,7 @@ int main(void)
 
 
 
-    //new
+
 
   }
 }
@@ -579,12 +583,16 @@ void saveName() {
 }
 void notepad() {
   if (cur == 20) {
+	
     strcat(str2, "\r\n"); // end and newline
-    strcat(str1, str2);
-    memset(str2, '\0', strlen(str2));
+    strcat(str1, str2);   // str 1 + str 2
+		L = str1;
+		shiftpoint = strlen(str1)/22; 	 // str1 is length 22 : 1 
+		point = 0;		
+    memset(str2, '\0', strlen(str2)); // clear str 2
     cur = 0;
     mapcur1 = 0;
-    printf(" str size it  %d  is %s \n", strlen(str1), str1);
+    printf(" text(str1) size it  %d  is %s \n", strlen(str1), str1);
   }
   if (USART_GetITStatus(USART2, USART_IT_RXNE)) {
     //----------------------------- uart to key--------------------------------
@@ -637,6 +645,8 @@ void notepad() {
       mode = 0;
     }
     else {
+		
+			
       if (bufferKey3digit[1] == 3  && bufferKey3digit[0] == 0) { // joy is up
         keyCode = 32;  // arrow up
       }
@@ -644,16 +654,63 @@ void notepad() {
         printf("\r\n-----------Save:------------\r\n");
         saveName();
       }
-      if (seeCur == 1) {  // selector mapcur 
+
+      else if (bufferKey3digit[1] == 0x04) {  // shiftLeft
+        printf("\r\n-----------Left------------\r\n");
+        
+				if (shiftpoint == 1) {
+          printf("\r\n------endLeft-------\r\n");
+          memset(left, '\0', strlen(left));
+          strncpy(left,str1,22);
+          printf("\r\n leftStr : %sr\n",left);
+
+        }
+				
+				if(shiftpoint > 1){ // 1 - 186
+			  memset(left, '\0', strlen(left));
+				strncpy(left,str1 + strlen(str1) - (  point+=22 ) ,22);
+					
+			  shiftpoint-=1; //  <<  Left 1 2 3 - 186   Right >>   
+				printf("\r\n left : %s  shiftpoint :%d\r\n",left,shiftpoint);
+		
+				}
+				
+				
+      }
+      else if (bufferKey3digit[1] == 0x08) { // shiftRight
+        printf("\r\n-----------Right------------\r\n");
+				
+       		if (shiftpoint == strlen(str1)/22) {
+          printf("\r\n------endRight-------\r\n");
+          memset(right, '\0', strlen(right));
+          strncpy(right,str1,22);
+          printf("\r\n rightstr : %sr\n",right);
+
+        }
+					
+				/*if(shiftpoint>=1){
+				 printf("\r\n------Right-------\r\n");
+          memset(right, '\0', strlen(right));
+          strncpy(right,str1 + (point+=20),22);
+          printf("\r\n rightstr : %sr\n",right);
+				}
+				*/
+			
+				
+      }
+
+
+
+      if (seeCur == 1) {  // selector mapcur
         mapcur =  mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
         if (mapcur <=  cur) {
           mapcur1 = mapcur;
-          statusmid = 1;  // insert str 
+          statusmid = 1;  // insert str
         }
         else {
           mapcur1 = cur;
         }
-        printf(" mapcur = %d \n ", mapcur1);
+        printf(" setcur = %d \n ", mapcur1);
       }
       if (bufferKey3digit[0] == 0x80 && seeCur != 1) {  // delete char in str2
         if (statusmid != 1) {
@@ -711,22 +768,16 @@ void notepad() {
         str2[cur] = 32;
         cur++;
       }
-      printf("str2: %s : len %d\r\n", str2, strlen(str2));
-      stringToUnicodeAndSendToDisplay(str2);
+      printf("text : %s and size : %d\r\n", str2, strlen(str2));
+    //  stringToUnicodeAndSendToDisplay(str2);
+			
       countKey = 0;
       keyCode = 0;
       seeCur = 0;
     }
   }
 }
-void unicode_to_ASCII() {
-  for ( i = 0; i < 255; i++) {
-    if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
-      break;
-    }
-  }
 
-}
 //-----------new----------
 void stringToUnicodeAndSendToDisplay(char *string) {
   int strleng = 0;
