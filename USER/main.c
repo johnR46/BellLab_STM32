@@ -668,7 +668,7 @@ void notepad() {
 				
 				if(shiftpoint > 1){ // 1 - 186
 			  memset(left, '\0', strlen(left));
-				strncpy(left,str1 + strlen(str1) - (  point+=22 ) ,22);
+				strncpy(left,str1 + strlen(str1) - (  point+=22 ) ,22); //  <<  1234567    =   7 6 5 4  3 2 1 
 					
 			  shiftpoint-=1; //  <<  Left 1 2 3 - 186   Right >>   
 				printf("\r\n left : %s  shiftpoint :%d\r\n",left,shiftpoint);
@@ -680,21 +680,24 @@ void notepad() {
       else if (bufferKey3digit[1] == 0x08) { // shiftRight
         printf("\r\n-----------Right------------\r\n");
 				
-       		if (shiftpoint == strlen(str1)/22) {
+       	if (shiftpoint == strlen(str1)/22) { // shiftpoint = strlen(str1)/22  
           printf("\r\n------endRight-------\r\n");
           memset(right, '\0', strlen(right));
-          strncpy(right,str1,22);
+          strncpy(right,str1 + strlen(str1)-22,22);
           printf("\r\n rightstr : %sr\n",right);
+			//shiftpoint+=1;
 
         }
 					
-				/*if(shiftpoint>=1){
-				 printf("\r\n------Right-------\r\n");
-          memset(right, '\0', strlen(right));
-          strncpy(right,str1 + (point+=20),22);
-          printf("\r\n rightstr : %sr\n",right);
-				}
-				*/
+			if(shiftpoint!=strlen(str1)/22){  // Right == endleft 
+		   printf("\r\n------Right-------\r\n");
+         memset(right, '\0', strlen(right));
+      //   strncpy(right,str1 - (point+=22),22);
+			strncpy(right,str1 - strlen(str1) + (  point+=22 ) ,22);  // Right == endleft +1
+			shiftpoint+=1;  															// shiftpoint >> + 
+         printf("\r\n rightstr : %sr\n",right);
+		 }
+				
 			
 				
       }
