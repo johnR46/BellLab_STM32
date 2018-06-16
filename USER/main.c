@@ -373,47 +373,47 @@ void changeBuatRate() {
   }
   printf("change 115200\r\n");
 }
-void prepareSD(){
-	int preStatus = 1;
-	command_++;
-	while(preStatus){
-		if (command_ == 1) {
-			SendCH370(checkConnection, sizeof(checkConnection));
-			printf(" check connecttion \r\n");
-			command_++; //2
-			delay_ms(50);
-		} else if (command_ == 2) {
-			SendCH370(setSDCard, sizeof(setSDCard));
-			printf(" set sd card\r\n");
-			command_++; //4
-			delay_ms(50);
-		} else if (command_ == 3) {
-			SendCH370(USBDiskMount, sizeof(USBDiskMount));
-			printf(" usb disk mount \r\n");
-			command_++; //6
-			delay_ms(50);
-		} else if (command_ == 4) {
-			SendCH370(setAllName, sizeof(setAllName));
-			printf(" set all file \r\n");
-			delay_ms(80);
-			command_++; //10
-		} else if (command_ == 5) {
-			SendCH370(FileOpen, sizeof(FileOpen));
-			printf(" file open \r\n");
-			delay_ms(80);
-			command_++; //10
-		} else if (command_ == 6) {
-			SendCH370(FileClose, sizeof(FileClose));
-			printf(" File Close \r\n");
-			delay_ms(80);
-			command_++; //10
-			preStatus = 0;
-		}
-		if (USART_GetITStatus(USART3, USART_IT_RXNE) ) {
-				i1 = USART_ReceiveData(USART3);
-				printf("%x-%d\r\n", i1, i1);
-		}
-	}
+void prepareSD() {
+  int preStatus = 1;
+  command_++;
+  while (preStatus) {
+    if (command_ == 1) {
+      SendCH370(checkConnection, sizeof(checkConnection));
+      printf(" check connecttion \r\n");
+      command_++; //2
+      delay_ms(50);
+    } else if (command_ == 2) {
+      SendCH370(setSDCard, sizeof(setSDCard));
+      printf(" set sd card\r\n");
+      command_++; //4
+      delay_ms(50);
+    } else if (command_ == 3) {
+      SendCH370(USBDiskMount, sizeof(USBDiskMount));
+      printf(" usb disk mount \r\n");
+      command_++; //6
+      delay_ms(50);
+    } else if (command_ == 4) {
+      SendCH370(setAllName, sizeof(setAllName));
+      printf(" set all file \r\n");
+      delay_ms(80);
+      command_++; //10
+    } else if (command_ == 5) {
+      SendCH370(FileOpen, sizeof(FileOpen));
+      printf(" file open \r\n");
+      delay_ms(80);
+      command_++; //10
+    } else if (command_ == 6) {
+      SendCH370(FileClose, sizeof(FileClose));
+      printf(" File Close \r\n");
+      delay_ms(80);
+      command_++; //10
+      preStatus = 0;
+    }
+    if (USART_GetITStatus(USART3, USART_IT_RXNE) ) {
+      i1 = USART_ReceiveData(USART3);
+      printf("%x-%d\r\n", i1, i1);
+    }
+  }
 }
 int main(void)
 {
@@ -433,39 +433,21 @@ int main(void)
   stringToUnicodeAndSendToDisplay("Notepad");
   //****************** check dot****************
   printf("---------------- \r\n");
-  
-	prepareSD();
-	command_ = 0;
-	command_ ++;
+
+  prepareSD();
+  command_ = 0;
+  command_ ++;
   while (1) {
-    //createFile();
-    //appendFile();
-    menu_s();
-    while (mode == 1) {
-      notepad();
-    }
-    while (mode == 3 && openFileStatus == 0) {
-      searchFile();
-    }
-    while (mode == 3 && openFileStatus == 1) {
-      ReadFile();
-    }
-    while (mode == 5) {
-      GPIO_SetBits(GPIOC , GPIO_Pin_0);
-      BluetoothMode();
-      // keyboardMode();
-      if (becon == 0) {
-        menu_s();
-      }
-      else {
-        keyboardMode();
-      }
-    }
+
+
+    notepad();
+
+
+
+
+    //new
+
   }
-
-
-  //new
-
 }
 void createFileAndWrite(char * fname) {
   command_ = 0;
@@ -513,7 +495,7 @@ void saveName() {
   int saving = 1;
   char nameBuff[15];
   int cc = 1;
-	memset(nameBuff,0,15);
+  memset(nameBuff, 0, 15);
   nameBuff[0] = '/';
   countKey = 0;
   keyCode = 0;
@@ -546,10 +528,10 @@ void saveName() {
           countKey = 0;
           SeeHead = 0;
         }
-				if((bufferKey3digit[0]==0x00 && bufferKey3digit[1]==0x20 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0]==0x00 && bufferKey3digit[1]==0x00 && bufferKey3digit[2] == 0x04)){ //back to notepad 
-					saving = 0;
-				  
-				}
+        if ((bufferKey3digit[0] == 0x00 && bufferKey3digit[1] == 0x20 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x00 && bufferKey3digit[1] == 0x00 && bufferKey3digit[2] == 0x04)) { //back to notepad
+          saving = 0;
+
+        }
         if (bufferKey3digit[2] == 2 || bufferKey3digit[1] == 0x10) { // save file
           printf("\r\n enter \r\n");
           i = 0;
@@ -597,7 +579,7 @@ void saveName() {
 }
 void notepad() {
   if (cur == 20) {
-		strcat(str2,"\r\n");
+    strcat(str2, "\r\n"); // end and newline
     strcat(str1, str2);
     memset(str2, '\0', strlen(str2));
     cur = 0;
@@ -662,18 +644,18 @@ void notepad() {
         printf("\r\n-----------Save:------------\r\n");
         saveName();
       }
-      if (seeCur == 1) {
+      if (seeCur == 1) {  // selector mapcur 
         mapcur =  mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
         if (mapcur <=  cur) {
           mapcur1 = mapcur;
-          statusmid = 1;
+          statusmid = 1;  // insert str 
         }
         else {
           mapcur1 = cur;
         }
         printf(" mapcur = %d \n ", mapcur1);
       }
-      if (bufferKey3digit[0] == 0x80 && seeCur != 1) {
+      if (bufferKey3digit[0] == 0x80 && seeCur != 1) {  // delete char in str2
         if (statusmid != 1) {
           if (cur != 0) {
             str2[cur] = '\0';
