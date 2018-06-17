@@ -311,7 +311,8 @@ extern void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 
 // John global Value
 char str1[4096];
-char str2[22];
+char str2[20];   // normal struct endRight
+char str3[20];   // normal struct (endLeft) LeftMax - LeftMin
 char ch[1];
 int mapcur = 0;
 int cur = 0;
@@ -325,7 +326,8 @@ int mapcur1;
 int mapcur2;
 char *L;
 int shiftpoint = 0;
-int point =0;
+int shiftstatus = 0;
+int point = 0;
 char left[22];
 char right[22];
 
@@ -582,13 +584,15 @@ void saveName() {
   }
 }
 void notepad() {
+	shiftstatus  = strlen(str1)/20;
   if (cur == 20) {
-	
-    strcat(str2, "\r\n"); // end and newline
+
+    //strcat(str2, "\r\n"); // end and newline
+
     strcat(str1, str2);   // str 1 + str 2
-		L = str1;
-		shiftpoint = strlen(str1)/22; 	 // str1 is length 22 : 1 
-		point = 0;		
+		
+   shiftpoint = strlen(str1)/20;  // str1 is length 22 : 1
+    point = 0;
     memset(str2, '\0', strlen(str2)); // clear str 2
     cur = 0;
     mapcur1 = 0;
@@ -645,8 +649,8 @@ void notepad() {
       mode = 0;
     }
     else {
-		
-			
+
+
       if (bufferKey3digit[1] == 3  && bufferKey3digit[0] == 0) { // joy is up
         keyCode = 32;  // arrow up
       }
@@ -657,52 +661,57 @@ void notepad() {
 
       else if (bufferKey3digit[1] == 0x04) {  // shiftLeft
         printf("\r\n-----------Left------------\r\n");
-        
-				if (shiftpoint == 1) {
+					cur = 0; // clear cur 
+
+        if (shiftpoint == 1) {
           printf("\r\n------endLeft-------\r\n");
           memset(left, '\0', strlen(left));
-          strncpy(left,str1,22);
-          printf("\r\n leftStr : %sr\n",left);
+          strncpy(left, str1, 20);				
+					printf("\r\n Leftstr : %sr\n", left);
+					
+					printf("edit %s ",str3);
+					memset(strfirst,0,strlen(strfirst));
+					
+					
+					
+					
 
         }
-				
-				if(shiftpoint > 1){ // 1 - 186
-			  memset(left, '\0', strlen(left));
-				strncpy(left,str1 + strlen(str1) - (  point+=22 ) ,22); //  <<  1234567    =   7 6 5 4  3 2 1 
-					
-			  shiftpoint-=1; //  <<  Left 1 2 3 - 186   Right >>   
-				printf("\r\n left : %s  shiftpoint :%d\r\n",left,shiftpoint);
-		
-				}
-				
-				
+
+        if (shiftpoint > 1) { // 1 - 186
+          memset(left, '\0', strlen(left));
+          strncpy(left, str1 + strlen(str1) - (  point += 20 ) , 20); //  <<  1234567    =   7 6 5 4  3 2 1
+
+          shiftpoint -= 1; //  <<  Left 1 2 3 - 256   Right >>
+          printf("\r\n Leftstr : %s  shiftpoint :%d\r\n", left, shiftpoint);
+
+        }
+
+
       }
       else if (bufferKey3digit[1] == 0x08) { // shiftRight
+					cur = 0; // clear cur 
         printf("\r\n-----------Right------------\r\n");
-				
-       	if (shiftpoint == strlen(str1)/22) { // shiftpoint = strlen(str1)/22  
+
+        if (shiftpoint == strlen(str1) / 20) { // shiftpoint = strlen(str1)/22
           printf("\r\n------endRight-------\r\n");
           memset(right, '\0', strlen(right));
-          strncpy(right,str1 + strlen(str1)-22,22);
-          printf("\r\n rightstr : %sr\n",right);
-			//shiftpoint+=1;
+          strncpy(right, str1 + strlen(str1) - 20, 20);
+          printf("\r\n Rightstr : %sr\n", right);
+          //shiftpoint+=1;
 
         }
-					
-			if(shiftpoint!=strlen(str1)/22){  // Right == endleft 
-		   printf("\r\n------Right-------\r\n");
-         memset(right, '\0', strlen(right));
-      //   strncpy(right,str1 - (point+=22),22);
-			strncpy(right,str1 - strlen(str1) + (  point+=22 ) ,22);  // Right == endleft +1
-			shiftpoint+=1;  															// shiftpoint >> + 
-         printf("\r\n rightstr : %sr\n",right);
-		 }
-				
-			
-				
+
+        if (shiftpoint != strlen(str1) / 20) { // Right == endleft
+          printf("\r\n------Right-------\r\n");
+          memset(right, '\0', strlen(right));
+          //   strncpy(right,str1 - (point+=22),22);
+          strncpy(right, str1 - strlen(str1) + (  point += 20 ) , 20); // Right == endleft +1
+          shiftpoint += 1;                              // shiftpoint >> +
+          printf("\r\n Rightstr : %sr\n", right);
+        }
+
       }
-
-
 
       if (seeCur == 1) {  // selector mapcur
         mapcur =  mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
@@ -727,37 +736,50 @@ void notepad() {
         for ( i = 0; i < 255; i++) {
           if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
             if (statusmid != 1 && keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
-              str2[cur] = i;
-              cur++;
+              if (shiftpoint == strlen(str1)/20) {
+                str2[cur] = i;
+                cur++;
+
+              }
+              if (shiftpoint != strlen(str1)/20) {
+                str3[cur] = i;
+                cur++;
+              }
+
+
             }
-            if (statusmid == 1  ) {
-              printf("cursor = %d \t mapcur1 = %d\t  \n", cur, mapcur1);
-              strncpy(strfirst, str2, mapcur1);
-              strncpy(strlast, str2 + mapcur1, strlen(str2) - mapcur1);
-              if (keyCode == 32) {
-                ch[0] = 32;
-                mapcur1++;
-                cur++;
-              }
-              if (bufferKey3digit[0] == 0x80  && seeCur != 1) {
-                ch[0] = '\0';
-                if (mapcur1 != 0) {
-                  memset(strfirst + strlen(strfirst) - 1, '\0', strlen(strfirst));
-                  cur--;
-                  mapcur1--;
+            if (statusmid == 1) {
+              if (shiftpoint == strlen(str1)/20) {
+                printf("cursor = %d \t mapcur1 = %d\t  \n", cur, mapcur1);
+                strncpy(strfirst, str2, mapcur1);
+                strncpy(strlast, str2 + mapcur1, strlen(str2) - mapcur1);
+                if (keyCode == 32) {
+                  ch[0] = 32;
+                  mapcur1++;
+                  cur++;
                 }
+                if (bufferKey3digit[0] == 0x80  && seeCur != 1) {
+                  ch[0] = '\0';
+                  if (mapcur1 != 0) {
+                    memset(strfirst + strlen(strfirst) - 1, '\0', strlen(strfirst));
+                    cur--;
+                    mapcur1--;
+                  }
+                }
+                if (keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
+                  ch[0] = i;
+                  mapcur1++;
+                  cur++;
+                }
+                strcat(strfirst, ch);
+                strcat(strfirst, strlast);
+                strcpy(str2, strfirst);
+                memset(strfirst, '\0', strlen(strfirst));
+                memset(strlast, '\0', strlen(strlast));
+                memset(ch, '\0', strlen(ch));
               }
-              if (keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
-                ch[0] = i;
-                mapcur1++;
-                cur++;
-              }
-              strcat(strfirst, ch);
-              strcat(strfirst, strlast);
-              strcpy(str2, strfirst);
-              memset(strfirst, '\0', strlen(strfirst));
-              memset(strlast, '\0', strlen(strlast));
-              memset(ch, '\0', strlen(ch));
+							
+							
             }
 
             break;
@@ -771,9 +793,12 @@ void notepad() {
         str2[cur] = 32;
         cur++;
       }
-      printf("text : %s and size : %d\r\n", str2, strlen(str2));
-    //  stringToUnicodeAndSendToDisplay(str2);
-			
+      printf("\r\n str2 : %s and size : %d\r\n", str2, strlen(str2));
+			  printf("\r\n str3 : %s and size : %d\r\n", str3, strlen(str3));
+      printf(" \r\n shiftpoint = %d\r\n", shiftpoint);
+			printf("\r\n lengthStr1 : %d\r\n",strlen(str1));
+      //  stringToUnicodeAndSendToDisplay(str2);
+
       countKey = 0;
       keyCode = 0;
       seeCur = 0;

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sun Jun 17 00:29:19 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Mon Jun 18 00:51:01 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -317,7 +317,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[8c]"></a>strcat</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strcat.o(.text))
+<P><STRONG><a name="[8d]"></a>strcat</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strcat.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
 </UL>
@@ -326,7 +326,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
 </UL>
 
-<P><STRONG><a name="[8d]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
+<P><STRONG><a name="[8c]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
 </UL>
 
@@ -738,16 +738,16 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
 </UL>
 
-<P><STRONG><a name="[89]"></a>notepad</STRONG> (Thumb, 1818 bytes, Stack size 0 bytes, main.o(i.notepad))
+<P><STRONG><a name="[89]"></a>notepad</STRONG> (Thumb, 2008 bytes, Stack size 0 bytes, main.o(i.notepad))
 <BR><BR>[Calls]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mapCursor
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
-<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
@@ -775,7 +775,7 @@ Global Symbols
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 <LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFileAndWrite
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 </UL>
 <BR>[Called By]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
 </UL>
