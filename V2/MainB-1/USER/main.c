@@ -584,7 +584,7 @@ void saveName() {
   }
 }
 void notepad() {
-	shiftstatus  = strlen(str1)/20;
+	
   if (cur == 20) {
 
     //strcat(str2, "\r\n"); // end and newline
@@ -662,15 +662,16 @@ void notepad() {
       else if (bufferKey3digit[1] == 0x04) {  // shiftLeft
         printf("\r\n-----------Left------------\r\n");
 					cur = 0; // clear cur 
+			if(shiftpoint == 0 ){
+			printf("\r\n no str 20 \r\n");
+			}
 
         if (shiftpoint == 1) {
           printf("\r\n------endLeft-------\r\n");
           memset(left, '\0', strlen(left));
           strncpy(left, str1, 20);				
-					printf("\r\n Leftstr : %sr\n", left);
+			printf("\r\n Leftstr : %sr\n", left);
 					
-					printf("edit %s ",str3);
-					memset(strfirst,0,strlen(strfirst));
 					
 					
 					
@@ -681,7 +682,7 @@ void notepad() {
         if (shiftpoint > 1) { // 1 - 186
           memset(left, '\0', strlen(left));
           strncpy(left, str1 + strlen(str1) - (  point += 20 ) , 20); //  <<  1234567    =   7 6 5 4  3 2 1
-
+		
           shiftpoint -= 1; //  <<  Left 1 2 3 - 256   Right >>
           printf("\r\n Leftstr : %s  shiftpoint :%d\r\n", left, shiftpoint);
 

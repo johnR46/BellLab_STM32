@@ -1151,7 +1151,7 @@ void MessangerASCII() {
 
           note.ch = i; // // convert keyboard to ascii
 
-          notepad(20, note.ch, 1);
+          notepad(20, note.ch, 1); // send to notepad 
           //        printf("%c",i);
           break;
         }
@@ -1174,27 +1174,36 @@ void MessangerASCII() {
 
 }
 void notepad( int setcursor, char str, int keycode) {
+	
   switch (keycode) {
-    case 1 : if (setcursor >= note.cursor) { //  case 1 add string is Left to Right is end in cursor = 20
+	  //  case 1 add string is Left to Right 
+    case 1 : if (setcursor >= note.cursor) {  //  add string in left to right 
 			
         if (note.cursor == 20) {
+			  
           strcat(note.str_rom, note.str_ram); // move string str_ram to str_rom
           printf(" \r\n str_rom \r\n");
-          printf("%s", note.str_rom);
+          printf("%s",note.str_rom);
           printf(" \r\n str_rom \r\n");
+			 note.cursor = 0; // clear cursor
           memset(note.str_ram, '\0', strlen(note.str_ram)); // clear str_ram
         }
+		  else {
+			  
         note.str_ram[note.cursor] = str;
         note.cursor++;
-        
         printf(" \r\n str_ram \r\n");
-
         printf("%s", note.str_ram);
-
         printf(" \r\n str_ram \r\n");
-
+		  printf("\r\n -------------\r\n");
+		  printf("cursor = %d",note.cursor);
+		  printf("\r\n -------------\r\n");
+		  }
 
       }
+	 else if(setcursor < note.cursor){  // insert string befor lastcursor  by setcursor
+	 
+	 }
       break;
 
 
