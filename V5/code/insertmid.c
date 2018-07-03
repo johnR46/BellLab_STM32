@@ -30,8 +30,8 @@ char *insertString(char *str, char ch, int setcur) {
     strfirst[i]  = *buff;  // strf = str index 0 - index setcur 
     i++;
     buff++;
-    if (i == setcur +1) {
-      strfirst[i] = ch;
+    if (i == setcur ) {
+    //  strfirst[i] = ch;
 
       i = 0;
       while (1) {
@@ -78,6 +78,10 @@ char *insertString(char *str, char ch, int setcur) {
     
     
   }
+  
+  printf("\r\nstrF = %s\r\n",strfirst);
+  printf("\r\nstrL = %s\r\n",strlast);
+  
 
 }
 
@@ -88,6 +92,8 @@ int  main() {
   printf(" str = %s \n", ss);
   printf("setcur = %d\n", 7);
   insertString(ss, ch, 7);
+  
+  
   printf("%s",ss);
 
 

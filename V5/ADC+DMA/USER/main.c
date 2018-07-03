@@ -276,7 +276,8 @@ void setFilename(char *name);
 
 // john function
 void notepad(int , char  , int); // notepad
-char *insertString(char *, char , int );	
+char *insertString(char *, char , int );
+char *deleteString(char *,char,int);
 int mapCursor(int, int, int);   // mapcursor
 int checkBit(int);               //  checkBit 0 - 7
 void MessangerASCII(void);         //  Reciver form Serial 3 and Convert to  ASCII  send Messanger to  notepad
@@ -482,7 +483,7 @@ int main(void)
   //****************** check dot****************
   printf("---------------- \r\n");
 
-  prepareSD();
+
   command_ = 1;
 
   //configFlash();
@@ -1100,23 +1101,13 @@ void MessangerASCII() {
       SeeHead = 1;                                                          //-
       countKey = 0;                                                         //-
     }
-    //-
-    if (countKey == 2 && uart2Buffer == 0xa4) {
-      seeCur = 1; // Spcebar
-		mapcur =  mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-		 if (mapcur <=  note.cursor) {
-          note.setcursor = mapcur;
-          //  statusmid = 1;  // insert str
-        }
-        else {
-           note.setcursor = note.cursor;
-        }
-      printf("\r\n It 's Setcursor  \r\n");
+    if (countKey == 2 && uart2Buffer == 0xa4) { // if cursor
+      seeCur = 1;
     }
     if (countKey >= 4 && countKey <= 6) {                                   //-
       bufferKey3digit[countKey - 4] = uart2Buffer;                          //-
     }
-    if (countKey == 2) //checkKeyError
+    if (countKey == 2) //0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     {
       checkKeyError = uart2Buffer;
     }
@@ -1126,7 +1117,7 @@ void MessangerASCII() {
   }
   if (countKey >= maxData) { //Recieve & checking key
     seeHead = 0;
-    printf("\r\nSee key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+    printf("\r\n==========See key(Hex) %x,%x,%x ================\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
 
     //printf("checkKey :%x\r\n",checkKeyError);
     if (checkKeyError == 0xff) { //check error key
@@ -1134,161 +1125,260 @@ void MessangerASCII() {
       countKey = 0;
       SeeHead = 0;
     }
-
     //printf("%d\r\n",sizeof(mode_1)/sizeof(int));
     //////////////////////////////////menu selector ///////////////////////////////////
 
     if (bufferKey3digit[1] != 0 || bufferKey3digit[2] != 0) { //joy menu
       // ---------------------------- to key code -----------------------------
       if (bufferKey3digit[2] == 1 || bufferKey3digit[2] == 0x20) { // joy is down
-        keyCode = 40; // arrow down
+       //keyCode = 40; // arrow down
         // command_++;
       }
       else if (bufferKey3digit[1] == 1 || bufferKey3digit[1] == 3 || bufferKey3digit[1] == 2) { // joy is up
-        keyCode = 55;  // arrow up
+        //keyCode = 55;  // arrow up
+      }
+      else if (bufferKey3digit[1] == 32 || bufferKey3digit[2] == 4) {
+        //keyCode = 8;
       }
     }
-
-    if (bufferKey3digit[1] == 3  && bufferKey3digit[0] == 0) { // joy is up
-      keyCode = 32;  // spcbar
-      notepad(note.setcursor, keyCode, 1);
-      //note.str_ram[note.cursor] = 32;
-      //note.cursor++;
-
-      //  printf("\r\n Specbar \r\n ");
-    }
-
-    if ((bufferKey3digit[0] != 0 && keyCode != 32 )) {
-      for ( i = 0; i < 255; i++) {
-        if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
-
-          note.ch = i; // // convert keyboard to ascii
+		   if (seeCur == 1) {  // selector mapcur
+        mapcur =  mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);  
+        printf("\r\n------------------ mapcursor = %d ----------------------------\r\n ", mapcur);
+				if(mapcur <= note.cursor){
+				note.setcursor = mapcur;
+				}else {
+				note.setcursor = note.cursor;
+				}
+				printf("\r\n------------------ note.setcursor = %d ----------------------------\r\n ", note.setcursor);
+      }
+			 
+			/* 
+			Debugger  
+			printf("\r\n------------------ note.setcursor = %d ----------------------------\r\n ", note.setcursor);
 			
-          notepad(note.setcursor,note.ch, 1); // send to notepad 
-          //        printf("%c",i);
+			*/
+			
+			 if (bufferKey3digit[0] == 0x80 && seeCur != 1) {  // delete char in str2
+				keyCode = 80; // delete 
+				 
+				 /* Debugger
+					
+				 printf("\r\n------------------------\r\n");
+					printf("delete");
+					printf("\r\n------------------------\r\n");
+				
+				 */
+				 
+      }
+			 
+			 if(keyCode == 80){ // switch mode keycode 
+			 note.keycode = 2;
+			 }
+			 else {
+			 note.keycode = 1;
+			 }		 	
+			 printf("\r\n------------------------\r\n");
+			 printf("keycode: %d",note.keycode);
+			 printf("\r\n------------------------\r\n");
+			 
+			 if(note.keycode == 2){
+				 if(note.setcursor!=0){
+				 	notepad(note.setcursor,'\0',note.keycode);
+				 }
+				 if(note.setcursor == 0){
+					printf("\r\n ------------------------ \r\n");
+					printf("end of line");
+					printf("\r\n ------------------------ \r\n");
+				 }
+			 }
+			 
+      if (bufferKey3digit[1] == 3  && bufferKey3digit[0] == 0) { // joy is up
+        keyCode = 32;  // arrow up
+				notepad(note.setcursor, keyCode,note.keycode);
+      }
+						
+           
+   
+    
+      if ((bufferKey3digit[0] != 0 && keyCode != 32 && keyCode != 80 )) { //  check null spcebar delete 
+			   for ( i = 0; i < 255; i++) {
+        if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
+            if(seeCur!=1){
+							note.ch = i; 
+					   notepad(note.setcursor,note.ch,note.keycode); // send to notepad 
+						}
+					// printf("%c",i);
           break;
         }
-
-
       }
-    }
-
-    /*printf("\r\n----------\r\n");
-
-      printf("Keycode = %d",keyCode);
-
-      printf("\r\n----------\r\n");
-
-    */
-    countKey = 0;
-    keyCode = 0;
-    seeCur = 0;
+			}
+			note.keycode = 0;
+      countKey = 0;
+      keyCode = 0;
+      seeCur = 0;
+    
   }
-
 }
 
-char *insertString(char *str, char ch, int setcur) {
- // char *buff; // buffer  = index *buffer = value
-  //int i = 0;
-  note.buff = str;
- // char strfirst[20]; // strF
- // memset(strfirst, '\0', strlen(strfirst)); // clear str
-  //char strlast[20];  // strL
- // memset(strlast, '\0', strlen(strlast));
+ 
+char *deleteString(char *str,char ch,int setcur){	 // delete str is setcur 
+//	memset(str + strlen(str) - 1,'\0',1);
+	note.buff = str;
   note.i = 0;
-
-  while (1) {  // separate str to stfF and strLast
-    note.strfirst[note.i]  = *note.buff;  // strf = str index 0 - index setcur 
+	/*    div  strF/index 0 + index(setcur)   strL = /(intdex setcur + strlen(str) */ 
+		while (1) {  // separate str to stfF and strLast
+     note.strfirst[note.i]  = *note.buff;  // strf = str index 0 - index setcur 
      note.i++;
-    note.buff++;
-    if ( note.i == setcur +1) {
-      note.strfirst[note.i] = ch;
-
-      note.i = 0;
+     note.buff++;
+    if (note.i == setcur) {
+        note.i = 0;
       while (1) {
-        note.strlast[ note.i] = *note.buff;       // strl  = str index setcur - strlen(str)
+        note.strlast[ note.i] = *note.buff;       // 
          note.i++;
         note.buff++;
         if ( note.i == setcur + strlen(str)) {
-			  
-            memset(str, '\0', strlen(str));
-         	strcat(strfirst,strlast);
-			  strcat(str,strfirst);
-   		  /*  note.buff = note.strfirst;
-             note.i = 0;
-            while (1) {
-            str[ note.i] = *note.buff;
-             note.i++;
-            note.buff++;
-            if (i == strlen(note.strfirst) ) {
-              note.buff = note.strlast;
-               note.i = 0;
-              while (1) {
-            	str[i+strlen(note.strfirst)] = *note.buff;
-                 note.i++;
-                note.buff++;
-                if(note.i == strlen(note.strlast)) {
-                  break;
-                }
-              } 
-              break;
-            }
-          }*/
           break;
         }
       }
       break;
     }  
   }
-  printf("\r\n----------------------\r\n");
-  printf("strFirst = %s",note.strfirst);
-  printf("\r\n----------------------\r\n");
-  printf("\r\n----------------------\r\n");
-  printf("strlast = %s",note.strlast);
-  printf("\r\n----------------------\r\n");
-  memset(note.strlast, '\0', strlen(note.strlast)); 
-  memset(note.strfirst, '\0', strlen(note.strfirst)); 
+		memset(note.strfirst + strlen(note.strfirst) - 1, '\0',1);	
+		strcat(note.strfirst,note.strlast);
+	  strcpy(note.str_ram,note.strfirst);	
+		memset(note.strfirst,0,strlen(note.strfirst));
+		memset(note.strlast,0,strlen(note.strlast));
+
+}
+char *insertString(char *str, char ch, int setcur) {
+ // char *buff; // buffer  = index *buffer = value
   
+if(setcur == 0){  // insert First str 
+	// str = aaa
+note.buff = &ch; // ch = A
+strcpy(note.strfirst,note.buff); // F = A
+strcpy(note.strlast,str);  //  L =  aaa
+strcat(note.strfirst,note.strlast); // F = A + L = aaa = Aaaa
+strcpy(note.str_ram,note.strfirst); // Aaaa
+memset(note.strfirst,0,strlen(note.strfirst));
+memset(note.strlast,0,strlen(note.strlast));
+}
+else {
+  note.buff = str;
+  note.i = 0;
+	/*    div  strF/index 0 + index(setcur)   strL = /(intdex setcur + strlen(str) */ 
+  while (1) {  // separate str to stfF and strLast
+     note.strfirst[note.i]  = *note.buff;  // strf = str index 0 - index setcur 
+     note.i++;
+     note.buff++;
+    if (note.i == setcur) {
+        note.i = 0;
+      while (1) {
+        note.strlast[ note.i] = *note.buff;       // 
+         note.i++;
+        note.buff++;
+        if ( note.i == setcur + strlen(str)) {
+          break;
+        }
+      }
+      break;
+    }  
+  }
+	
+note.buff = &ch;
+strcat(note.strfirst,note.buff);
+strcat(note.strfirst,note.strlast);
+strcpy(note.str_ram,note.strfirst);
+	
+	
+	/*  Debugger 
+	printf("\r\n------------------\r\n");
+	printf("insert strF =  %s",note.strfirst);
+	printf("\r\n------------------\r\n");
+
+	printf("\r\n------------------\r\n");
+	printf(" insert strL = %s",note.strlast);
+	printf("\r\n------------------\r\n");	
+*/	
+ memset(note.strfirst,0,strlen(note.strfirst));
+ memset(note.strlast,0,strlen(note.strlast));
+
+}
 }
 
 
 void notepad( int setcursor, char str, int keycode) {
 	
-  switch (keycode) {
-	  //  case 1 add string is Left to Right 
-    case 1 : if (setcursor >= note.cursor) {  //  add string in left to right 
-			
-        if (note.cursor == 20) {
-			  
-          strcat(note.str_rom, note.str_ram); // move string str_ram to str_rom
+	if (strlen(note.str_ram) == 20) {
+	        strcat(note.str_rom, note.str_ram); // move string str_ram to str_rom
           printf(" \r\n str_rom \r\n");
           printf("%s",note.str_rom);
           printf(" \r\n str_rom \r\n");
-			 note.cursor = 0; // clear cursor
+					note.cursor = 0; // clear cursor
+					note.setcursor = 0;
           memset(note.str_ram, '\0', strlen(note.str_ram)); // clear str_ram
-        }
-		  else {
-			  
+    }
+	
+  switch (keycode) {
+	  //  case 1 add string is Left to Right 
+    case 1 : 
+			if (setcursor >= note.cursor) {  //  add string in left to right 	  
         note.str_ram[note.cursor] = str;
         note.cursor++;
+				note.setcursor++;
         printf(" \r\n str_ram \r\n");
         printf("%s", note.str_ram);
         printf(" \r\n str_ram \r\n");
-		  printf("\r\n -------------\r\n");
-		  printf("cursor = %d",note.cursor);
-		  printf("\r\n -------------\r\n");
-		  }
-
+		    printf("\r\n -------------\r\n");
+		    printf("cursor = %d",note.cursor);
+		    printf("\r\n -------------\r\n");
       }
 	 else if(setcursor < note.cursor){  // insert string befor lastcursor  by setcursor
-	 insertString(note.str_ram,str,setcursor);
-	 note.cursor++;
- 	 printf(" \r\n str_ram \r\n");
-    printf("%s", note.str_ram);
-    printf(" \r\n str_ram \r\n");
+				insertString(note.str_ram,str,setcursor);
+				note.cursor++;
+				note.setcursor++;
+				if(note.setcursor >=  note.cursor){
+				note.setcursor = note.cursor;
+			}
+				
+			printf("\r\n -------------\r\n");
+			printf("cursor = %d",note.cursor);
+			printf("\r\n -------------\r\n");
+			printf(" \r\n str_ram \r\n");
+			printf("%s", note.str_ram);
+			printf(" \r\n str_ram \r\n");
+		
 	 }
-      break;
-
+      break;  // end case 1
+	 case 2 : 
+		 	if (setcursor >= note.cursor && note.cursor >0 ) {  // delete string in right to left 	  
+        note.str_ram[note.cursor] = str;
+        note.cursor--;
+				note.setcursor--;
+        printf(" \r\n str_ram \r\n");
+        printf("%s", note.str_ram);
+        printf(" \r\n str_ram \r\n");
+		    printf("\r\n -------------\r\n");
+		    printf("cursor = %d",note.cursor);
+		    printf("\r\n -------------\r\n");
+      }
+			else if(setcursor < note.cursor && note.cursor >0  ){  // insert string befor lastcursor  by setcursor
+				deleteString(note.str_ram,str,setcursor);
+				note.cursor--;
+				note.setcursor--;
+				if(note.setcursor >=  note.cursor){
+					note.setcursor = note.cursor;
+			}			
+			printf("\r\n -------------\r\n");
+			printf("cursor = %d",note.cursor);
+			printf("\r\n -------------\r\n");
+			printf(" \r\n str_ram \r\n");
+			printf("%s", note.str_ram);
+			printf(" \r\n str_ram \r\n");
+		
+	 }
+		 
+	break;
 
 
     default : printf("\r\n ------------ error -------------\r\n");
