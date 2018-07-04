@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Jul 03 18:46:05 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Jul 04 15:09:44 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -318,10 +318,6 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;insertString
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;deleteString
-</UL>
-
-<P><STRONG><a name="[8c]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
 </UL>
 
 <P><STRONG><a name="[81]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
@@ -648,6 +644,10 @@ Global Symbols
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
+<P><STRONG><a name="[8c]"></a>copynstr</STRONG> (Thumb, 72 bytes, Stack size 0 bytes, main.o(i.copynstr))
+<BR><BR>[Called By]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
+</UL>
+
 <P><STRONG><a name="[79]"></a>delay_init</STRONG> (Thumb, 54 bytes, Stack size 0 bytes, systick.o(i.delay_init))
 <BR><BR>[Calls]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_CLKSourceConfig
 <LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_GetClocksFreq
@@ -712,14 +712,14 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MessangerASCII
 </UL>
 
-<P><STRONG><a name="[63]"></a>notepad</STRONG> (Thumb, 716 bytes, Stack size 0 bytes, main.o(i.notepad))
+<P><STRONG><a name="[63]"></a>notepad</STRONG> (Thumb, 872 bytes, Stack size 0 bytes, main.o(i.notepad))
 <BR><BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;insertString
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;deleteString
+<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;copynstr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MessangerASCII
 </UL>
