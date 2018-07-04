@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Jul 03 16:33:04 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Jul 03 18:46:05 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -320,6 +320,10 @@ Global Symbols
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;deleteString
 </UL>
 
+<P><STRONG><a name="[8c]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
+</UL>
+
 <P><STRONG><a name="[81]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;insertString
@@ -418,7 +422,7 @@ Global Symbols
 <P><STRONG><a name="[3]"></a>MemManage_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f10x_it.o(i.MemManage_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
-<P><STRONG><a name="[5e]"></a>MessangerASCII</STRONG> (Thumb, 588 bytes, Stack size 0 bytes, main.o(i.MessangerASCII))
+<P><STRONG><a name="[5e]"></a>MessangerASCII</STRONG> (Thumb, 698 bytes, Stack size 0 bytes, main.o(i.MessangerASCII))
 <BR><BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
@@ -708,9 +712,10 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MessangerASCII
 </UL>
 
-<P><STRONG><a name="[63]"></a>notepad</STRONG> (Thumb, 520 bytes, Stack size 0 bytes, main.o(i.notepad))
+<P><STRONG><a name="[63]"></a>notepad</STRONG> (Thumb, 716 bytes, Stack size 0 bytes, main.o(i.notepad))
 <BR><BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;insertString
