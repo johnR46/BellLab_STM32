@@ -274,13 +274,15 @@ void SendCH370(int data[], int);
 void changeBuatRate(void);
 void setFilename(char *name);
 
-// john function 
+// john function
 // normal function
 void notepad(int , char  , int); // notepad
-void *addstring(char ,int);  // case 1
-void *addstring2(char ,int);  // case 1.1
-void *delstring(char,int); // case 2
-void *delstring2(char,int); // case 2.1
+void *addstring(char , int); // case 1
+void *addstring2(char , int); // case 1.1
+void *delstring(char, int); // case 2
+void *delstring2(char, int); // case 2.1
+void *rightstring();
+void *rightstring2();
 void *leftstring();
 void *leftstring2();
 void *Enddisplay();
@@ -356,6 +358,7 @@ struct  {
   int keycode;
   int i;
   int j;
+  int state;
   int shiftpoint;
   char *buff; // buffer  = index *buffer = value
   char *buff2;
@@ -1134,7 +1137,7 @@ void MessangerASCII() {
   }
   if (countKey >= maxData) { //Recieve & checking key
     seeHead = 0;
-    printf("\r\n==========See key(Hex) %x,%x,%x ================\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+    printf("\r\n===================================See key(Hex) %x,%x,%x =====================================\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
 
     //printf("checkKey :%x\r\n",checkKeyError);
     if (checkKeyError == 0xff) { //check error key
@@ -1177,11 +1180,11 @@ void MessangerASCII() {
       }
       printf("\r\n------------------ note.setcursor = %d ----------------------------\r\n ", note.setcursor);
     }
-		
-		//	if(note.shiftpoint == strlen(note.str_rom)/20){
-				
-		
-		//	}
+
+    //  if(note.shiftpoint == strlen(note.str_rom)/20){
+
+
+    //  }
 
     /*
       Debugger
@@ -1207,11 +1210,13 @@ void MessangerASCII() {
     }
     else if (keyCode == 60) {
       note.keycode = 3;
+      note.state = 0;
       printf("\r\n-----------Left------------\r\n");
       notepad(note.setcursor, 0, note.keycode);
     }
     else if (keyCode == 70) {
       note.keycode = 4;
+      note.state = 1;
       printf("\r\n-----------Right------------\r\n");
       notepad(note.setcursor, 0, note.keycode);
     }
@@ -1245,16 +1250,36 @@ void MessangerASCII() {
       for ( i = 0; i < 255; i++) {
         if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
           if (seeCur != 1) {
-            	note.ch = i;
-						//if(note.shiftpoint>= strlen(note.str_rom)/20){     // select shiftpoint for edit & write || delete str and insert to str_rom 
-						
-						  notepad(note.setcursor, note.ch, note.keycode); // send to notepad
-						
-						//}
-					//	else{
-							//notepad(note.setcursor, note.ch,3);
-						//}
-          
+            note.ch = i;
+            // select shiftpoint for edit & write || delete str and insert to str_rom
+            if (note.shiftpoint >= strlen(note.str_rom) / 20 ) { // endRigjt
+
+              notepad(note.setcursor, note.ch, note.keycode); // send to notepad
+              printf("\r\n First add str mode : %d  is shiftpoint = %d\r\n", note.keycode, note.shiftpoint);
+              /*
+                Debugger
+              */
+            }
+            else if (note.shiftpoint > 1) { // middle  1 <-> max-1
+              if (note.state == 0) {
+                note.keycode = 3;
+              }
+              if (note.state == 1 ) {
+                note.keycode = 4;
+
+              }
+
+              printf("\r\n middle add str mode : %d  is shiftpoint = %d\r\n", note.keycode, note.shiftpoint);
+
+            }
+
+
+            else   if (note.shiftpoint == 1) { // Endleft
+              //notepad(note.setcursor, note.ch,3);
+              printf("\r\n  last  endleft add str mode : %d  is shiftpoint = %d\r\n", note.keycode, note.shiftpoint);
+            }
+
+
           }
           // printf("%c",i);
           break;
@@ -1372,155 +1397,241 @@ char *insertString(char *str, char ch, int setcur) {
       printf(" insert strL = %s",note.strlast);
       printf("\r\n------------------\r\n");
     */
-		
+
     memset(note.strfirst, 0, strlen(note.strfirst));
     memset(note.strlast, 0, strlen(note.strlast));
 
   }
 }
 
-void *addstring(char ch,int index){   // case 1
-	//  add string in left to right
-        note.str_ram[index] = ch;
-        note.cursor++;
-        note.setcursor++;
-        printf(" \r\n str_ram \r\n");
-        printf("%s", note.str_ram);
-        printf(" \r\n str_ram \r\n");
-        printf("\r\n -------------\r\n");
-        printf("cursor = %d", note.cursor);
-        printf("\r\n -------------\r\n");
-				
-}
-void *addstring2(char ch,int index){  // case 1.2
-				insertString(note.str_ram,ch, index);
-        note.cursor++;
-        note.setcursor++;
-        if (note.setcursor >=  note.cursor) {
-          note.setcursor = note.cursor;
-        }
+void *addstring(char ch, int index) { // case 1 add right string
+  //  add string in left to right
+  note.str_ram[index] = ch;
+  note.cursor++;
+  note.setcursor++;
+  printf(" \r\n str_ram \r\n");
+  printf("%s", note.str_ram);
+  printf(" \r\n str_ram \r\n");
+  printf("\r\n -------------\r\n");
+  printf("cursor = %d", note.cursor);
+  printf("\r\n -------------\r\n");
 
-        printf("\r\n -------------\r\n");
-        printf("cursor = %d", note.cursor);
-        printf("\r\n -------------\r\n");
-        printf(" \r\n str_ram \r\n");
-        printf("%s", note.str_ram);
-        printf(" \r\n str_ram \r\n");
-				
+}
+void *addstring2(char ch, int index) { // case 1.2 add middle string
+  insertString(note.str_ram, ch, index);
+  note.cursor++;
+  note.setcursor++;
+  if (note.setcursor >=  note.cursor) {
+    note.setcursor = note.cursor;
+  }
+
+  printf("\r\n -------------\r\n");
+  printf("cursor = %d", note.cursor);
+  printf("\r\n -------------\r\n");
+  printf(" \r\n str_ram \r\n");
+  printf("%s", note.str_ram);
+  printf(" \r\n str_ram \r\n");
+
 }
 
-void *delstring(char ch,int index){  // case 2
+void *delstring(char ch, int index) { // case 2  delete right to left
+
+  note.str_ram[index] = ch;
+  note.cursor--;
+  note.setcursor--;
+  printf(" \r\n str_ram \r\n");
+  printf("%s", note.str_ram);
+  printf(" \r\n str_ram \r\n");
+  printf("\r\n -------------\r\n");
+  printf("cursor = %d", note.cursor);
+  printf("\r\n -------------\r\n");
+}
+void *delstring2(char ch, int index) { // case 2.1  delete middle to left string
+  deleteString(note.str_ram, ch, index);
+  note.cursor--;
+  note.setcursor--;
+  if (note.setcursor >=  note.cursor) {
+    note.setcursor = note.cursor;
+  }
+  printf("\r\n -------------\r\n");
+  printf("cursor = %d", note.cursor);
+  printf("\r\n -------------\r\n");
+  printf(" \r\n str_ram \r\n");
+  printf("%s", note.str_ram);
+  printf(" \r\n str_ram \r\n");
+}
+
+
+void *rightstring() {
+//	note.j = 0; // endright   start 0 - 20
+  memset(note.Right, 0, strlen(note.Right));
+  printf("\r\n-----------------------\r\n");
+  printf("End Right");
+  printf("\r\n-----------------------\r\n");
 	
-				note.str_ram[index] = ch;
-        note.cursor--;
-        note.setcursor--;
-        printf(" \r\n str_ram \r\n");
-        printf("%s", note.str_ram);
-        printf(" \r\n str_ram \r\n");
-        printf("\r\n -------------\r\n");
-        printf("cursor = %d", note.cursor);
-        printf("\r\n -------------\r\n");
+	note.j = strlen(note.str_rom) - 20;
+  copynstr(note.Right,note.str_rom + note.j , 20);
+	
+	printf("\r\n j = :%d \r\n",note.j);
+  printf("\r\n-----------------------\r\n");
+  printf("StrRight =  %s", note.Right);
+  printf("\r\n-----------------------\r\n");
+  printf("\r\n-----------------------\r\n");
+  printf("shiftpoint = %d", note.shiftpoint);
+  printf("\r\n-----------------------\r\n");
+  memset(note.Right, 0, strlen(note.Right));
 }
-void *delstring2(char ch,int index){  // case 2.1 
-				deleteString(note.str_ram,ch, index);
-        note.cursor--;
-        note.setcursor--;
-        if (note.setcursor >=  note.cursor) {
-          note.setcursor = note.cursor;
-        }
-        printf("\r\n -------------\r\n");
-        printf("cursor = %d", note.cursor);
-        printf("\r\n -------------\r\n");
-        printf(" \r\n str_ram \r\n");
-        printf("%s", note.str_ram);
-        printf(" \r\n str_ram \r\n");
+
+void *rightstring2() {
+	
+  note.shiftpoint++;
+  memset(note.Right, 0, strlen(note.Right));
+	
+  copynstr(note.Right,note.str_rom + abs((note.j+=20)), 20); //  start 20 - next +20 ->>>>>
+	
+	printf("\r\n j = :%d \r\n",note.j);
+  printf("\r\n-----------------------\r\n");
+  printf("StrRight =  %s", note.Right);
+  printf("\r\n-----------------------\r\n");
+  printf("\r\n-----------------------\r\n");
+  printf("shiftpoint = %d", note.shiftpoint);
+  printf("\r\n-----------------------\r\n");
+  memset(note.Right, 0, strlen(note.Right));
+
 }
-void *leftstring(){
-				memset(note.Left, 0, strlen(note.Left));
-        printf("\r\n-----------------------\r\n");
-        printf("End Left");
-        printf("\r\n-----------------------\r\n");
-        copynstr(note.Left, note.str_rom, 20);
-        printf("\r\n-----------------------\r\n");
-        printf("StrLeft =  %s", note.Left);
-        printf("\r\n-----------------------\r\n");
-        printf("\r\n-----------------------\r\n");
-        printf("shiftpoint = %d", note.shiftpoint);
-        printf("\r\n-----------------------\r\n");
-				memset(note.Left, 0, strlen(note.Left));
+
+void *leftstring() {
+	
+	
+  memset(note.Left, 0, strlen(note.Left));
+  printf("\r\n-----------------------\r\n");
+  printf("End Left");
+  printf("\r\n-----------------------\r\n");
+	note.j = 0;
+	
+  copynstr(note.Left,note.str_rom+note.j,20); // end left 0-20 start 0 - 20
+	
+	printf("\r\n j = :%d \r\n",note.j);
+  printf("\r\n-----------------------\r\n");
+  printf("StrLeft =  %s", note.Left);
+  printf("\r\n-----------------------\r\n");
+  printf("\r\n-----------------------\r\n");
+  printf("shiftpoint = %d", note.shiftpoint);
+  printf("\r\n-----------------------\r\n");
+  memset(note.Left, 0, strlen(note.Left));
 }
-void *leftstring2(){
-				note.shiftpoint--;
-				memset(note.Left, 0, strlen(note.Left));
-        copynstr(note.Left, note.str_rom + strlen(note.str_rom) + (note.j = note.j - 20), 20); //  shiftleft by 20 index char 
-        printf("\r\n-----------------------\r\n");
-        printf("StrLeft =  %s", note.Left);
-        printf("\r\n-----------------------\r\n");
-				printf("\r\n-----------------------\r\n");
-        printf("shiftpoint = %d", note.shiftpoint);
-        printf("\r\n-----------------------\r\n");
-        memset(note.Left, 0, strlen(note.Left));
+void *leftstring2() {
+  note.shiftpoint--;
+  memset(note.Left, 0, strlen(note.Left));
+	
+	
+	
+  copynstr(note.Left, note.str_rom + strlen(note.str_rom) + (note.j = note.j - 20), 20); //  start 20 - next +20  
+	
+	printf("\r\n j = :%d \r\n",note.j);
+
+  printf("\r\n-----------------------\r\n");
+  printf("StrLeft =  %s", note.Left);
+  printf("\r\n-----------------------\r\n");
+  printf("\r\n-----------------------\r\n");
+  printf("shiftpoint = %d", note.shiftpoint);
+  printf("\r\n-----------------------\r\n");
+  memset(note.Left, 0, strlen(note.Left));
 }
-void *Enddisplay(){
-		strcat(note.str_rom, note.str_ram); // move string str_ram to str_rom
-    printf(" \r\n -----str_rom----- \r\n");
-    printf("%s", note.str_rom);
-    printf(" \r\n -----str_rom----- \r\n");
-    note.cursor = 0; // clear cursor
-    note.setcursor = 0;
-    note.shiftpoint = strlen(note.str_rom) / 20;      // shifpoint =  str/20
-    printf(" \r\n -----shiftpoint----- \r\n");
-    printf(" shiftpoint = %d", note.shiftpoint);
-    note.j = 0;  //  reset shiftLeftstr
-    printf(" \r\n -----shiftpoint----- \r\n");
-    memset(note.str_ram, '\0', strlen(note.str_ram)); // clear str_ram
-		
+void *Enddisplay() {
+  strcat(note.str_rom, note.str_ram); // move string str_ram to str_rom
+  printf(" \r\n -----str_rom----- \r\n");
+  printf("%s", note.str_rom);
+  printf(" \r\n -----str_rom----- \r\n");
+  note.cursor = 0; // clear cursor
+  note.setcursor = 0;
+  note.shiftpoint = strlen(note.str_rom) / 20;      // shifpoint =  str/20
+  printf(" \r\n -----shiftpoint----- \r\n");
+  printf(" shiftpoint = %d", note.shiftpoint);
+  note.j = 0;  //  reset shiftLeftstr
+  printf(" \r\n -----shiftpoint----- \r\n");
+  memset(note.str_ram, '\0', strlen(note.str_ram)); // clear str_ram
+
 }
 
 void notepad( int setcursor, char str, int keycode) {
 
   if (strlen(note.str_ram) == 20 || note.cursor == 20) {
-		Enddisplay();
+    Enddisplay();
   }
 
   switch (keycode) {
     //  case 1 add string is Left to Right
     case 1 :
       if (setcursor >= note.cursor) {
-				 addstring(str,note.cursor);
+        addstring(str, note.cursor);
       }
       else if (setcursor < note.cursor) { // insert string befor lastcursor  by setcursor
-				addstring2(str,setcursor);
+        addstring2(str, setcursor);
       }
       break;  // end case 1
     case 2 :
       if (setcursor >= note.cursor && note.cursor > 0 ) { // delete string in right to left
-				delstring(str,note.cursor);
+        delstring(str, note.cursor);
       }
       else if (setcursor < note.cursor && note.cursor > 0  ) { // insert string befor lastcursor  by setcursor
-			delstring2(str,setcursor);
+        delstring2(str, setcursor);
       }
 
       break;
     case 3:   // shift Left
-      
+
 
       if (note.shiftpoint == 0) {
+
         printf("\r\n-----------------------\r\n");
         printf("str_rom  < 20");
         printf("\r\n-----------------------\r\n");
+
       }
       if (note.shiftpoint == 1) { // End Left   EndLeft = 1 << str_rom >> EndRight  = strlen(str_rom)
+				printf("\r\n ----- leftstring ---------- \r\n");       
 				leftstring();
+				
+			printf("\r\n---strrom :%s--\r\n",note.str_rom);
+				
+				
       }
       if (note.shiftpoint > 1) {
+				printf("\r\n ----- leftstring2 ---------- \r\n");       
 				leftstring2();
+				
+			printf("\r\n---strrom :%s--\r\n",note.str_rom);
       }
       break;
 
     case 4:   // shift  Right
+			
+		 if (note.shiftpoint == 0) {
 
-      /* Debugger */
+        printf("\r\n-----------------------\r\n");
+        printf("str_rom  < 20");
+        printf("\r\n-----------------------\r\n");
+
+      }
+		 
+		else  if(note.shiftpoint == strlen(note.str_rom)/20){  // end right 
+				printf("\r\n ----- rightstring ---------- \r\n");
+		 // 	rightstring();
+				printf("\r\n---strrom :%s--\r\n",note.str_rom);
+		 }
+		 else if(note.shiftpoint != strlen(note.str_rom)/20){
+			 
+				printf("\r\n ----- rightstring2 ---------- \r\n");
+			 // rightstring2();
+			 
+				printf("\r\n---strrom :%s--\r\n",note.str_rom);
+		 }
+			 
+		 
+
+
+      /* Debugger 
 
       printf("\r\n-----------------------\r\n");
       printf("shiftpoint = %d", note.shiftpoint);
@@ -1528,7 +1639,7 @@ void notepad( int setcursor, char str, int keycode) {
       printf(" \r\n -----str_rom----- \r\n");
       printf("%s", note.str_rom);
       printf(" \r\n -----str_rom----- \r\n");
-		
+      */
       break;
 
 

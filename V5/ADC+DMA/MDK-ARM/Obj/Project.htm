@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Jul 04 17:08:46 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Jul 17 17:56:45 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -328,6 +328,7 @@ Global Symbols
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;leftstring
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;insertString
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;deleteString
+<LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MessangerASCII
 <LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Enddisplay
 </UL>
 
@@ -432,8 +433,9 @@ Global Symbols
 <P><STRONG><a name="[3]"></a>MemManage_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f10x_it.o(i.MemManage_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
-<P><STRONG><a name="[62]"></a>MessangerASCII</STRONG> (Thumb, 698 bytes, Stack size 0 bytes, main.o(i.MessangerASCII))
+<P><STRONG><a name="[62]"></a>MessangerASCII</STRONG> (Thumb, 812 bytes, Stack size 0 bytes, main.o(i.MessangerASCII))
 <BR><BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
@@ -736,7 +738,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;addstring2
 </UL>
 
-<P><STRONG><a name="[8d]"></a>leftstring</STRONG> (Thumb, 108 bytes, Stack size 0 bytes, main.o(i.leftstring))
+<P><STRONG><a name="[8d]"></a>leftstring</STRONG> (Thumb, 128 bytes, Stack size 0 bytes, main.o(i.leftstring))
 <BR><BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
@@ -745,7 +747,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
 </UL>
 
-<P><STRONG><a name="[8f]"></a>leftstring2</STRONG> (Thumb, 124 bytes, Stack size 0 bytes, main.o(i.leftstring2))
+<P><STRONG><a name="[8f]"></a>leftstring2</STRONG> (Thumb, 134 bytes, Stack size 0 bytes, main.o(i.leftstring2))
 <BR><BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
@@ -778,7 +780,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MessangerASCII
 </UL>
 
-<P><STRONG><a name="[66]"></a>notepad</STRONG> (Thumb, 248 bytes, Stack size 0 bytes, main.o(i.notepad))
+<P><STRONG><a name="[66]"></a>notepad</STRONG> (Thumb, 342 bytes, Stack size 0 bytes, main.o(i.notepad))
 <BR><BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;leftstring2

@@ -35,8 +35,22 @@ char *copynstr(char *str,char * ch,int size){
 	
 }
 
+
 void main(){
+
 	int x = 0;
-copynstr(note.str_ram,xx+5,5);
+	
+	printf("\r\n -- all --\r\n");
+	printf("%s",xx);
+	printf("\r\n -- ---- --\r\n");
+	
+copynstr(note.str_ram, xx +2, 5);
+
+printf("\r\n  ------------ \r\n");
+
+copynstr(note.str_ram,xx + strlen(xx) - 5 ,5);
+
+
+
 
 }
