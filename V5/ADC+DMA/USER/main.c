@@ -1463,16 +1463,16 @@ void *delstring2(char ch, int index) { // case 2.1  delete middle to left string
 
 
 void *rightstring() {
-//	note.j = 0; // endright   start 0 - 20
+  //  note.j = 0; // endright   start 0 - 20
   memset(note.Right, 0, strlen(note.Right));
   printf("\r\n-----------------------\r\n");
   printf("End Right");
   printf("\r\n-----------------------\r\n");
-	
-	note.j = strlen(note.str_rom) - 20;
-  copynstr(note.Right,note.str_rom + note.j , 20);
-	
-	printf("\r\n j = :%d \r\n",note.j);
+
+  note.j = strlen(note.str_rom) - 20;
+  copynstr(note.Right, note.str_rom + note.j , 20);
+
+  printf("\r\n j = :%d \r\n", note.j);
   printf("\r\n-----------------------\r\n");
   printf("StrRight =  %s", note.Right);
   printf("\r\n-----------------------\r\n");
@@ -1483,13 +1483,13 @@ void *rightstring() {
 }
 
 void *rightstring2() {
-	
+
   note.shiftpoint++;
   memset(note.Right, 0, strlen(note.Right));
-	
-  copynstr(note.Right,note.str_rom + abs((note.j+=20)), 20); //  start 20 - next +20 ->>>>>
-	
-	printf("\r\n j = :%d \r\n",note.j);
+
+  copynstr(note.Right, note.str_rom + abs((note.j += 20)), 20); //  start 20 - next +20 ->>>>>
+
+  printf("\r\n j = :%d \r\n", note.j);
   printf("\r\n-----------------------\r\n");
   printf("StrRight =  %s", note.Right);
   printf("\r\n-----------------------\r\n");
@@ -1501,17 +1501,15 @@ void *rightstring2() {
 }
 
 void *leftstring() {
-	
-	
   memset(note.Left, 0, strlen(note.Left));
   printf("\r\n-----------------------\r\n");
   printf("End Left");
   printf("\r\n-----------------------\r\n");
-	note.j = 0;
-	
-  copynstr(note.Left,note.str_rom+note.j,20); // end left 0-20 start 0 - 20
-	
-	printf("\r\n j = :%d \r\n",note.j);
+  note.j = 0;
+
+  copynstr(note.Left, note.str_rom + note.j, 20); // end left 0-20 start 0 - 20
+
+  printf("\r\n j = :%d \r\n", note.j);
   printf("\r\n-----------------------\r\n");
   printf("StrLeft =  %s", note.Left);
   printf("\r\n-----------------------\r\n");
@@ -1523,12 +1521,13 @@ void *leftstring() {
 void *leftstring2() {
   note.shiftpoint--;
   memset(note.Left, 0, strlen(note.Left));
-	
-	
-	
-  copynstr(note.Left, note.str_rom + strlen(note.str_rom) + (note.j = note.j - 20), 20); //  start 20 - next +20  
-	
-	printf("\r\n j = :%d \r\n",note.j);
+
+
+  note.j = abs(note.j - 20);
+
+  copynstr(note.Left, note.str_rom + note.j, 20); //  start 20 - next +20
+
+  printf("\r\n j = :%d \r\n", note.j);
 
   printf("\r\n-----------------------\r\n");
   printf("StrLeft =  %s", note.Left);
@@ -1583,63 +1582,51 @@ void notepad( int setcursor, char str, int keycode) {
 
 
       if (note.shiftpoint == 0) {
-
         printf("\r\n-----------------------\r\n");
         printf("str_rom  < 20");
         printf("\r\n-----------------------\r\n");
-
       }
       if (note.shiftpoint == 1) { // End Left   EndLeft = 1 << str_rom >> EndRight  = strlen(str_rom)
-				printf("\r\n ----- leftstring ---------- \r\n");       
-				leftstring();
-				
-			printf("\r\n---strrom :%s--\r\n",note.str_rom);
-				
-				
+        //printf("\r\n ----- leftstring ---------- \r\n");
+        leftstring();
+
       }
       if (note.shiftpoint > 1) {
-				printf("\r\n ----- leftstring2 ---------- \r\n");       
-				leftstring2();
-				
-			printf("\r\n---strrom :%s--\r\n",note.str_rom);
+        //printf("\r\n ----- leftstring2 ---------- \r\n");
+        leftstring2();
+
       }
       break;
 
     case 4:   // shift  Right
-			
-		 if (note.shiftpoint == 0) {
+
+      if (note.shiftpoint == 0) {
 
         printf("\r\n-----------------------\r\n");
         printf("str_rom  < 20");
         printf("\r\n-----------------------\r\n");
 
       }
-		 
-		else  if(note.shiftpoint == strlen(note.str_rom)/20){  // end right 
-				printf("\r\n ----- rightstring ---------- \r\n");
-		 // 	rightstring();
-				printf("\r\n---strrom :%s--\r\n",note.str_rom);
-		 }
-		 else if(note.shiftpoint != strlen(note.str_rom)/20){
-			 
-				printf("\r\n ----- rightstring2 ---------- \r\n");
-			 // rightstring2();
-			 
-				printf("\r\n---strrom :%s--\r\n",note.str_rom);
-		 }
-			 
-		 
 
+      else  if (note.shiftpoint == strlen(note.str_rom) / 20) { // end right
+        //  printf("\r\n ----- rightstring ---------- \r\n");
+        rightstring();
+      }
+      else if (note.shiftpoint != strlen(note.str_rom) / 20) {
+        //  printf("\r\n ----- rightstring2 ---------- \r\n");
+        rightstring2();
+      }
 
-      /* Debugger 
+      /* Debugger
 
-      printf("\r\n-----------------------\r\n");
-      printf("shiftpoint = %d", note.shiftpoint);
-      printf("\r\n-----------------------\r\n");
-      printf(" \r\n -----str_rom----- \r\n");
-      printf("%s", note.str_rom);
-      printf(" \r\n -----str_rom----- \r\n");
+        printf("\r\n-----------------------\r\n");
+        printf("shiftpoint = %d", note.shiftpoint);
+        printf("\r\n-----------------------\r\n");
+        printf(" \r\n -----str_rom----- \r\n");
+        printf("%s", note.str_rom);
+        printf(" \r\n -----str_rom----- \r\n");
       */
+
       break;
 
 
