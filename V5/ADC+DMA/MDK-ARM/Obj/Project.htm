@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Jul 18 16:37:48 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Jul 19 13:12:04 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -307,6 +307,7 @@ Global Symbols
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;leftstring2
 <LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;leftstring
+<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Enddisplay
 </UL>
 
 <P><STRONG><a name="[87]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
@@ -375,10 +376,11 @@ Global Symbols
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
 </UL>
 
-<P><STRONG><a name="[53]"></a>Enddisplay</STRONG> (Thumb, 66 bytes, Stack size 0 bytes, main.o(i.Enddisplay))
+<P><STRONG><a name="[53]"></a>Enddisplay</STRONG> (Thumb, 82 bytes, Stack size 0 bytes, main.o(i.Enddisplay))
 <BR><BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
+<LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad
 </UL>
@@ -436,7 +438,7 @@ Global Symbols
 <P><STRONG><a name="[3]"></a>MemManage_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f10x_it.o(i.MemManage_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
-<P><STRONG><a name="[62]"></a>MessangerASCII</STRONG> (Thumb, 798 bytes, Stack size 0 bytes, main.o(i.MessangerASCII))
+<P><STRONG><a name="[62]"></a>MessangerASCII</STRONG> (Thumb, 862 bytes, Stack size 0 bytes, main.o(i.MessangerASCII))
 <BR><BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
@@ -776,7 +778,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MessangerASCII
 </UL>
 
-<P><STRONG><a name="[66]"></a>notepad</STRONG> (Thumb, 418 bytes, Stack size 0 bytes, main.o(i.notepad))
+<P><STRONG><a name="[66]"></a>notepad</STRONG> (Thumb, 428 bytes, Stack size 0 bytes, main.o(i.notepad))
 <BR><BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
