@@ -11,7 +11,7 @@ char str_ram[20];
 char str_rom[4096];
 }note;
 
-char *xx = "John nonphala AAAAAAAAAAAAAAAAAAasdaslihdf;lisadfglkhjasdliuyaqtdfilaswfsdlkjhgdfsljkhdgsflkjhlk/hdfgz,k/h.xzcg,mh,mbvxcgz,X";
+char *str_rom = "John nonphala AAAAAAAAAAAAAAAAAAasdaslihdf;lisadfglkhjasdliuyaqtdfilaswfsdlkjhgdfsljkhdgsflkjhlk/hdfgz,k/h.xzcg,mh,mbvxcgz,X";
 
 char *copynstr(char *str,char * ch,int size){	 
     note.buff2 = str;
@@ -41,14 +41,14 @@ void main(){
 	int x = 0;
 	
 	printf("\r\n -- all --\r\n");
-	printf("%s",xx);
+	printf("%s",str_rom);
 	printf("\r\n -- ---- --\r\n");
 	
-copynstr(note.str_ram, xx +2, 5);
+copynstr(note.str_ram, str_rom , 5);
 
 printf("\r\n  ------------ \r\n");
 
-copynstr(note.str_ram,xx + strlen(xx) - 5 ,5);
+copynstr(note.str_ram,str_rom + strlen(str_rom) - 5 ,5);
 
 
 
