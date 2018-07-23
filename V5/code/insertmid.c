@@ -8,14 +8,6 @@ char ch = 'A';
 
 
 
-char *insert(char *str, char ch, int setcur) { // insert mind str
-  char *buff; // buffer  = index *buffer = value
-  // %s = buff
-  // %c = *buff;
-  buff = str; // buffer index 0
-  buff += setcur;
-  *buff = ch;
-}
 
 char *insertString(char *str, char ch, int setcur) {
   char *buff; // buffer  = index *buffer = value
@@ -86,13 +78,33 @@ char *insertString(char *str, char ch, int setcur) {
 }
 
 
+struct{
+	
+	int i;
+	int cursor;
+	int setcursor;
+	char ch;
+	char *buff;
+	char *buff2;
+	char str_ram[40];
+	char str_rom[4096];
+	
+}note;
+
+char *insertshift(char *str, char ch, int setcur) { // insert mind str
+
+	note.buff = str;
+	note.buff += setcur;
+	*note.buff = ch;
+
+}
 
 
 int  main() {
   printf(" str = %s \n", ss);
   printf("setcur = %d\n", 7);
-  insertString(ss, ch, 7);
-  
+ 
+  insertshift(ss,'B',7);
   
   printf("%s",ss);
 

@@ -1,0 +1,9 @@
+ str_rom - 123 456 789
+shiftpoint = 3
+ str_ram - 123
+cursor_ram = 3
+cursor_rom =  cursor_ram * shiftpoint = 3*3 = 9
+   
+
+-> notepad(str_ram,ch,cursor_ram,mode) //  cursor_ram =  0 > 19 ** 20 - 39
+->insertshift(str_rom,ch,cursor_rom); //  cursor_rom = shifpoint*cursor_ram
