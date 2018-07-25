@@ -100,6 +100,62 @@ char *insertshift(char *str, char ch, int setcur) { // insert mind str
 }
 
 
+char *insertString(char *str, char ch, int setcur) {
+  // char *buff; // buffer  = index *buffer = value
+  if (setcur == 0) { // insert First str
+    // str = aaa
+    note.buff = &ch; // ch = A
+    strcpy(note.strfirst, note.buff); // F = A
+    strcpy(note.strlast, str); //  L =  aaa
+    strcat(note.strfirst, note.strlast); // F = A + L = aaa = Aaaa
+    strcpy(note.str_ram, note.strfirst); // Aaaa
+    memset(note.strfirst, 0, strlen(note.strfirst));
+    memset(note.strlast, 0, strlen(note.strlast));
+  }
+  else {
+    note.buff = str;
+    note.i = 0;
+    /*    div  strF/index 0 + index(setcur)   strL = /(intdex setcur + strlen(str) */
+    while (1) {  // separate str to stfF and strLast
+      note.strfirst[note.i]  = *note.buff;  // strf = str index 0 - index setcur
+      note.i++;
+      note.buff++;
+      if (note.i == setcur) {
+        note.i = 0;
+        while (1) {
+          note.strlast[ note.i] = *note.buff;       //
+          note.i++;
+          note.buff++;
+          if ( note.i == setcur + strlen(str)) {
+            break;
+          }
+        }
+        break;
+      }
+    }
+
+    note.buff = &ch;
+    strcat(note.strfirst, note.buff);
+    strcat(note.strfirst, note.strlast);
+    strcpy(note.str_ram, note.strfirst);
+
+
+    /*  Debugger
+      printf("\r\n------------------\r\n");
+      printf("insert strF =  %s",note.strfirst);
+      printf("\r\n------------------\r\n");
+
+      printf("\r\n------------------\r\n");
+      printf(" insert strL = %s",note.strlast);
+      printf("\r\n------------------\r\n");
+    */
+
+    memset(note.strfirst, 0, strlen(note.strfirst));
+    memset(note.strlast, 0, strlen(note.strlast));
+
+  }
+}
+
 int  main() {
   printf(" str = %s \n", ss);
   printf("setcur = %d\n", 7);

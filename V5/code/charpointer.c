@@ -1,6 +1,8 @@
 #include<stdio.h>
 #include<string.h>
 
+
+
 struct  {
   int cursor; // auto gen
   int setcursor;  // by user
@@ -14,46 +16,77 @@ struct  {
   char strfirst[20]; // strF
   char strlast[20];
   char ch;
-  char str_buff[20];
   char str_rom[4096];
-  char str_ram[20];
-  char Left[20];
-  char Right[20];
-
+  char str_ram[40];
+  char 
+ 
 
 } note;
 
 
-void *addstring(char *str,char ch, int index) { // case 1 add right string
-  //  add string in left to right
-  note.buff = str;
-  while(*note.buff!='\0'){
-  	note.buff++;
-  }
-  *note.buff  = ch;
-  
- // note.str_ram[index] = ch;
-  note.cursor++;
-  note.setcursor++;
- /*
-  printf(" \r\n str_ram \r\n");
-  printf("%s", note.str_ram);
-  printf(" \r\n str_ram \r\n");
-  printf("\r\n -------------\r\n");
-  printf("cursor = %d", note.cursor);
-  printf("\r\n -------------\r\n");
-  
-  */
+char *x = "zxcvbnm,,./asdfghjkl;'qweertyuiop'"; // 34 = 17/2 
+char y[17];
+char z[17];
 
+
+char *insert_rom(char *str,char ch,int setcursor){
+
+	note.buff = str;
+	note.i = 0;
+	memset(note.strfirst,'\0',20);
+	memset(note.strlast,'\0',20);
+	
+	note.buff2 = note.strfirst;
+	
+	
+	while(1){
+		*note.buff2  = *note.buff;
+		note.i++;
+		note.buff++;
+		note.buff2++;
+		
+		if(note.i == setcursor){
+			note.buff2 = note.strlast;
+			while(1){
+				*note.buff2 = *note.buff;
+				note.buff++;
+				note.buff2++;
+				if(*note.buff == '\0'){
+					break;
+				}
+				
+			}
+			break;
+		
+			}
+	
+			
+		}
+		
+		
+		
+		
+				
+	
+	
+	printf("str F  = %s\n",note.strfirst);
+	printf("str L  = %s\n",note.strlast);
+	
+
+	
 }
-
-char ch[20]  = "john nonphala";
 
 
 void main(){
-	printf("strlen  : %d",strlen(ch));
+	
+	
+	
+	insert_rom(x,'Z',2);
+	
+
 
 	
+
 
 	
 }

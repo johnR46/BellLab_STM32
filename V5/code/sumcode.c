@@ -291,7 +291,7 @@ void *midleftstring();  // case 4.1
 void *Enddisplay();   // check cursor == 40 or strlen(str_rom) == 40
 
 // expert function
-char *insert_rom(char *,char ch,int);
+char *insertshift(char *,char ch,int);
 char *copynstr(char *, char *, int);
 char *insertString(char *, char , int );
 char *deleteString(char *, char, int);
@@ -359,7 +359,6 @@ char DIRPath[32] = "";
 struct  {
   int cursor; // auto gen
   int setcursor;  // by user
-  int cursor_rom;
   int keycode;
   int i;
   int j;
@@ -367,14 +366,12 @@ struct  {
   int shiftpoint;
   char *buff; // buffer  = index *buffer = value
   char *buff2;
-  char strfirst[2048]; // strF
-  char strlast[2048];
+  char strfirst[40]; // strF
+  char strlast[40];
   char ch;
   char str_buff[40];
   char str_rom[4096];
   char str_ram[40];
-
-
 
 
 
@@ -1200,28 +1197,25 @@ void MessangerASCII() {
         }
         
 
-        if (keyCode!=70 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && bufferKey3digit[0]  == unicodeTable[(char) i] || keyCode ==32) {
+        if (keyCode!=70 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && bufferKey3digit[0]  == unicodeTable[(char) i]) {
           if (seeCur != 1) {
             note.ch = i;
 
             if (keyCode == 32) {
               note.keycode = 1;
               note.ch = keyCode;
-              
             }
             else if (keyCode == 80) {
               note.keycode = 2;
               note.ch = '\0';
-              
             }
             else {
               note.keycode = 1;
             }
             // select shiftpoint for edit & write || delete str and insert to str_rom
             if (note.shiftpoint >= strlen(note.str_rom) / 20 ) { // endRigjt
-              notepad(note.setcursor,note.ch, note.keycode); // send to notepad
+              notepad(note.setcursor, note.ch, note.keycode); // send to notepad
               printf("\r\n First add str mode : %d  is shiftpoint = %d\r\n", note.keycode, note.shiftpoint);
-              printf("\r\nnote.ch = %d\r\n",note.ch);
 
             }
             else if (note.shiftpoint > 1) { // middle  1 <-> max-1
@@ -1239,22 +1233,13 @@ void MessangerASCII() {
  
 
             else   if (note.shiftpoint == 1) { // Endleft  johnnow
-					  	printf("\r\n  strlen(note.str_ram) = %d \r\n",note.setcursor);
-					  	printf("\r\n  edit   last endleft add str mode : %d  is shiftpoint = %d\r\n", note.keycode, note.shiftpoint);
-					  	printf("\r\ncursor = %d setcur = %d \r\n",note.cursor,note.setcursor);
-              note.cursor_rom = note.shiftpoint*note.cursor; 
-           if(note.cursor<=18){
-						 notepad(note.setcursor,note.ch, note.keycode); 
-             insert_rom(note.str_rom,note.ch,note.setcursor);
-
-						} 
-					 if(keyCode == 80 && note.cursor >= 19 && note.cursor <=20){
-					  notepad(note.setcursor,'\0',2); 
-					 }if(note.cursor >=20){
-						printf("\r\nMax cursor !! plase delete character \r\n");
-						}
-             
-            
+          
+      //     
+             printf("\r\n  strlen(note.str_ram) = %d \r\n",note.setcursor);
+             printf("\r\n  last  endleft add str mode : %d  is shiftpoint = %d\r\n", note.keycode, note.shiftpoint);
+             printf("\r\ncursor = %d setcur = %d \r\n",note.cursor,note.setcursor);
+           //  notepad(note.setcursor,note.ch, note.keycode); 
+            // insertshift(note.str_ram,note.ch,note.setcursor);
              
             }
 
@@ -1273,67 +1258,11 @@ void MessangerASCII() {
   }
 }
 
+char *insertshift(char *str, char ch, int setcur) { // insert mind str
 
-char *insert_rom(char *str, char ch, int setcur) { // insert mind str
-if(setcur == 0){
-   // str = aaa
-    note.buff = &ch; // ch = A
-    strcpy(note.strfirst, note.buff); // F = A
-    strcpy(note.strlast, str); //  L =  aaa
-    strcat(note.strfirst, note.strlast); // F = A + L = aaa = Aaaa
-    strcpy(note.str_ram, note.strfirst); // Aaaa
-    memset(note.strfirst, 0, strlen(note.strfirst));
-    memset(note.strlast, 0, strlen(note.strlast));
-}else {
-
-note.buff = str;
-	note.i = 0;
-	memset(note.strfirst,'\0',20);
-	memset(note.strlast,'\0',20);
-	note.buff2 = note.strfirst;
-	while(1){
-		*note.buff2  = *note.buff;
-		note.i++;
-		note.buff++;
-		note.buff2++;
-		
-		if(note.i == setcur){
-			note.buff2 = note.strlast;
-			while(1){
-				*note.buff2 = *note.buff;
-				note.buff++;
-				note.buff2++;
-				if(*note.buff == '\0'){
-					break;
-				}
-				
-			}
-			break;
-		
-			}
-	
-			
-		}
-
-    note.buff = &ch;
-    strcat(note.strfirst, note.buff);
-    strcat(note.strfirst, note.strlast);
-    strcpy(note.str_rom, note.strfirst);
-		
-		
-		
-		
-				
-	  memset(note.strfirst, 0, strlen(note.strfirst));
-    memset(note.strlast, 0, strlen(note.strlast));
-	
-	//printf("str F  = %s\n",note.strfirst);
-	//printf("str L  = %s\n",note.strlast);
-	
-
-}
-
-	
+	note.buff = str;
+	note.buff += setcur;
+	*note.buff = ch;
 
 }
 
@@ -1436,6 +1365,7 @@ char *deleteString(char *str, char ch, int setcur) { // delete str is setcur
   memset(note.strlast, 0, strlen(note.strlast));
 
 }
+
 char *insertString(char *str, char ch, int setcur) {
   // char *buff; // buffer  = index *buffer = value
   if (setcur == 0) { // insert First str
@@ -1550,7 +1480,6 @@ void *delstring2(char ch, int index) { // case 2.1  delete middle to left string
 
 void *Enddisplay() {
   strcat(note.str_rom, note.str_ram); // move string str_ram to str_rom
-  
   printf(" \r\n -----str_rom----- \r\n");
   printf("%s", note.str_rom);
   printf(" \r\n -----str_rom----- \r\n");
