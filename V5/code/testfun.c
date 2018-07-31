@@ -23,34 +23,7 @@ struct  {
 
 
 } note;
-char *deleteString(char *str, char ch, int setcur) { // delete str is setcur
-  //  memset(str + strlen(str) - 1,'\0',1);
-  note.buff = str;
-  note.i = 0;
-  /*    div  strF/index 0 + index(setcur)   strL = /(intdex setcur + strlen(str) */
-  while (1) {  // separate str to stfF and strLast
-    note.strfirst[note.i]  = *note.buff;  // strf = str index 0 - index setcur
-    note.i++;
-    note.buff++;
-    if (note.i == setcur) {
-      note.i = 0;
-      while (1) {
-        note.strlast[ note.i] = *note.buff;       //
-        note.i++;
-        note.buff++;
-        if ( note.i == setcur + strlen(str)) {
-          break;
-        }
-      }
-      break;
-    }
-  }
-  memset(note.strfirst + strlen(note.strfirst) - 1, '\0', 1);
-  strcat(note.strfirst, note.strlast);
-  strcpy(note.str_ram, note.strfirst);
-  memset(note.strfirst, 0, strlen(note.strfirst));
-  memset(note.strlast, 0, strlen(note.strlast));
-}
+
 
 char *insertString(char *str, char ch, int setcur) {
   // char *buff; // buffer  = index *buffer = value
@@ -96,11 +69,11 @@ char *insertString(char *str, char ch, int setcur) {
   }
 }
 
+
 void main(){
 	
-	//insertString("abc",'x',3);
-	
-	deleteString('')
+	strcpy(note.str_ram,"ABgbsdC");
+	insertString(note.str_ram,'x',3);
 	printf("%s",note.str_ram);
 	
 }
