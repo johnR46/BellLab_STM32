@@ -19,7 +19,7 @@ char *x  =  "AAA\r\nBBB\r\nCCC\r\nDDD\r\nEEE\r\nFFF\r\nGGG\r\nHHH\r\nIII\r\nJJJ\
 char *y = "john nonpharewewrretwuts fddddddddhdjdddddd                la";
 
 
-char *insertlen(char *str,char *ch,int start){
+char *insert(char *str,char *ch,int start){
 	
 	note.buff = str;
 	note.buff2 = ch;
