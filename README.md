@@ -1,10 +1,10 @@
-???????? notepad
- now fix ... 
-	< 4096, 40 =  102 >
+notepad
+
+	< 4096, 40 =  102 > .. ok
 1. add text
 	- add First shiftpoint is n 
 		- add left to right 
-			- 40 character to 2 line (20 to newline by /r/n auto)
+			- 40 character to 2 line (20 to newline by /r/n auto)  .. > (now fix)
 			- by enter keycode is now newline it's add --------- to 20 character and newline
 		
 		- insert mid  to left mid right
