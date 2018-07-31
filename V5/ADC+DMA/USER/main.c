@@ -1192,7 +1192,7 @@ void MessangerASCII() {
     if ((bufferKey3digit[0] || bufferKey3digit[1] || bufferKey3digit[2])) { //  check null spcebar delete
       for ( i = 0; i < 255; i++) {
         if (bufferKey3digit[1] == 0x04 && seeCur != 1) {
-          note.state = 0; // left
+        //  note.state = 0; // left
           printf("\r\nLeft\r\n");
           notepad(0, '\0', 3);
           // note.setcursor = strlen(note.str_ram); //  shift = 20
@@ -1201,7 +1201,7 @@ void MessangerASCII() {
 
         } else if (bufferKey3digit[1] == 0x08) {
           printf("\r\nRight\r\n");
-          note.state = 1; // right
+          //note.state = 1; // right
           notepad(0, '\0', 4);
           //     note.setcursor = strlen(note.str_ram); //  shift = 20
           note.cursor = strlen(note.str_ram) - 1;
@@ -1532,16 +1532,43 @@ char *deleteString(char *str, char ch, int setcur) { // delete str is setcur
 
 
 char *insertString(char *str, char ch, int setcur) {
+
+
   // char *buff; // buffer  = index *buffer = value
-  if (setcur == 0) { // insert First str
+  if (setcur == 0 ) { // insert First str
     // str = aaa
+   /*
+    if(note.state ==0){
+      strcpy(note.)
+    }
+    */
+  /*
+   if(note.state == 1){
+    strcat(note.strfirst,note.str_buff);
+    memset(note.str_buff,'\0',strlen(note.str_buff));
+   }
+   */
+    
     note.buff = &ch; // ch = A
     strcpy(note.strfirst, note.buff); // F = A
     strcpy(note.strlast, str); //  L =  aaa
     strcat(note.strfirst, note.strlast); // F = A + L = aaa = Aaaa
     strcpy(note.str_ram, note.strfirst); // Aaaa
     memset(note.strfirst, 0, strlen(note.strfirst));
+/*
+    if(note.cursor <= 18){
+      note.state = 0;
     memset(note.strlast, 0, strlen(note.strlast));
+    }
+    if(note.cursor > 18 ){
+    note.state = 1;
+    strcpy(note.str_buff,note.strlast);
+    Enddisplay(); 
+    memset(note.strlast, 0, strlen(note.strlast));
+    }
+
+  */
+
   }
   else {
     note.buff = str;
@@ -1565,6 +1592,7 @@ char *insertString(char *str, char ch, int setcur) {
       }
     }
 
+  
     note.buff = &ch;
     strcat(note.strfirst, note.buff);
     strcat(note.strfirst, note.strlast);
@@ -1624,12 +1652,11 @@ void *Enddisplay() {
 
 }
 void newline() {
-  if (note.cursor == 18  && seeCur != 1 && note.setcursor >= note.cursor ) { // newline
+  if (note.cursor == 18  && seeCur != 1 && note.setcursor >= note.cursor ) { // normal newline 
   Enddisplay();
-    
-
   }
 
+  
   /*
   if (note.cursor == 37  && seeCur != 1) {
     strcat(note.str_rom, note.str_ram); 

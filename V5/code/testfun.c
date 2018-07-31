@@ -25,7 +25,7 @@ struct  {
 } note;
 
 
-char *insertString(char *str, char ch, int setcur) {
+char *insertString(char *str,char ch,int setcur) {
   // char *buff; // buffer  = index *buffer = value
   if (setcur == 0) { // insert First str
     // str = aaa

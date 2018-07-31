@@ -39,12 +39,33 @@ notepad
 		- insert mid  to left mid right
 			- in now line edit to 20 character to 1 line (sum = 2 line 40 character)
  
-			
+	
 		
 
 
 fun ... 
   newline 
 	-newline = 	AAAA ------------ (ok )
+
+
+solution  add newline in insert character 
+	- solution (1 line  = AB     \r\n 2 line =      C\r\n)
+		-> cursor = 0 (_  = specbar)
+		 	add _  __________________A  (cursor = 17)
+			add  - -> cursor = 18
+			________________\r\n (in str_ram)  strncpy(note.str_buff,note.strlast)  and clear str_last ... now fix	
+			Enddisplay();
+				-> setcur = 0
+				-> cursor = 0
+				-> strcat(rom,ram);
+					- strbuff = A 
+			 state ? 
+			  
+			
+ 
+
+
+
+
 	
 
