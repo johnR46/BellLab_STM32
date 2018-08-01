@@ -12,33 +12,35 @@ notepad
 			
 		
 		- insert mid  to left mid right
-			- in now line edit to 18 character add \r\n remmove last character to newline .. > (now fix) 
-				- solution (1 line  = AB     \r\n 2 line =      C\r\n)
+			- in now line edit to 18 character add \r\n remmove last character to newline .. > (ok ) 
+
+				
 
 
 	- add middle shiftpoint is  1 <-> n-1
-		- 20 character to 1 line (20 to newline by /r/n auto)  
+		- 20 character to 1 line (20 to newline by /r/n auto)  .. > 
 				(fix  18 character  to /r/n)
-					- cut to rom 
+					- cut to rom  ... 
 
-			- by enter keycode is now newline it's add --------- to 20 character and newline
+			- by enter keycode is now newline it's add --------- to 20 character and newline ..> 
 			
 		
 		- insert mid  to left mid right
-			- in now line edit to 20 character to 1 line (sum = 2 line 40 character)
+			- in now line edit to 18 character add \r\n remmove last character to newline .. > 
+				
 
 
 	- add last shiftpoint  is 0
-		- 20 character to 1 line (20 to newline by /r/n auto) 
+		- 20 character to 1 line (20 to newline by /r/n auto)  .. > (now fix)
 				(fix  18 character  to /r/n)
-					- cut to rom 
+					- cut to rom  ...  
 
-			- by enter keycode is now newline it's add --------- to 20 character and newline
+			- by enter keycode is now newline it's add --------- to 20 character and newline ..> 
 			
 		
 		- insert mid  to left mid right
-			- in now line edit to 20 character to 1 line (sum = 2 line 40 character)
- 
+			- in now line edit to 18 character add \r\n remmove last character to newline .. > 
+				
 	
 		
 
@@ -47,19 +49,34 @@ fun ...
   newline 
 	-newline = 	AAAA ------------ (ok )
 
+ convertArrayStr_2D_to_1D
+	in - str1[notepad_max_X][notepad_max_y] = {"john nonphala\r\n","sursak sinjlern\r\n","omg\r\n"};
+	out = 	john nonphala
+		sursak sinjlern
+		omg
 
-solution  add newline in insert character 
+
+solution  add newline in insert character (* = new addstr)
 	- solution (1 line  = AB     \r\n 2 line =      C\r\n)
-		-> cursor = 0 (_  = specbar)
-		 	add _  __________________A  (cursor = 17)
-			add  - -> cursor = 18
-			________________\r\n (in str_ram)  strncpy(note.str_buff,note.strlast)  and clear str_last ... now fix	
-			Enddisplay();
-				-> setcur = 0
-				-> cursor = 0
-				-> strcat(rom,ram);
-					- strbuff = A 
-			 state ? 
+		->   if in fun newline call by notepad ( (note.setcursor < note.cursor ) && (note.cursor > 18)    ) call fun insertNewline ?
+			- (* = add newstr) in str  = john nonphala Sura* is cursor = 18 + 1  = 19 setcursor = 17+1 = 18 
+				-  "John nonphala Sur||a*|" 
+				- add r\n is cursor 19 - 20 = "john nonphala Sur*\r\n"
+			
+			- if(cursor >= 18 && setcursor < cursor )
+
+			-> insertNewline (int setcursor)
+				 - "john ||*nonphala Sura|" << ?? 
+					-copynstr(note.str_buff,note.str_ram+setcursor,20); new = "nonphala Sura"  old =  "john ||**nonphala Sura|"
+					
+				
+			*** cancle  befor shifleft right edit 	   
+				
+				
+				 	
+			
+		
+		
 			  
 			
  

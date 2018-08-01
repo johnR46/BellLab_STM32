@@ -6,7 +6,7 @@
 #define notepax_max 205
 
 
-char Dimen2[notepax_max][notepad_y] = {"john nonphala","surs       ak sinjlern","omg"};
+char Dimen2[notepax_max][notepad_y] = {"john nonphala\r\n","sursak sinjlern\r\n","omg\r\n"};
 char Dimen1[notepad_y*notepax_max] = ""; //initalise so safe to pass to strcat
     
     
