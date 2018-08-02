@@ -1191,22 +1191,30 @@ void MessangerASCII() {
         //  note.state = 0; // left
           printf("\r\nLeft\r\n");
           notepad(0, '\0', 3);
-          // note.setcursor = strlen(note.str_ram); //  shift = 20
-          note.cursor = strlen(note.str_ram) - 1;
+           note.cursor_rom = strlen(note.str_rom) - note.j;
+          note.setcursor = strlen(note.str_ram)-2; //  shift = 20
+          note.cursor = strlen(note.str_ram)-2;
+          deleteString(note.str_ram,'\0',18);
+	        deleteString(note.str_ram,'\0',19);
+          
           break;
 
         } else if (bufferKey3digit[1] == 0x08) {
           printf("\r\nRight\r\n");
+           note.cursor_rom = strlen(note.str_rom) + note.j;
           //note.state = 1; // right
           notepad(0, '\0', 4);
-          //     note.setcursor = strlen(note.str_ram); //  shift = 20
-          note.cursor = strlen(note.str_ram) - 1;
-
+          deleteString(note.str_ram,'\0',18);
+	        deleteString(note.str_ram,'\0',19);
+          note.setcursor = strlen(note.str_ram) - 2; //  shift = 20
+          note.cursor = strlen(note.str_ram) - 2;
+          
           break;
         }
         else if (bufferKey3digit[0] == 0x40) {
-          printall();
-          buttomnewline(note.str_ram);
+           //buttomnewline(note.str_ram);
+           printall();
+         
           break;
         }
 
@@ -1228,23 +1236,32 @@ void MessangerASCII() {
             else {
               note.keycode = 1;
             }
+              
+               
             // select shiftpoint for edit & write || delete str and insert to str_rom
             if (note.shiftpoint >= strlen(note.str_rom)/20) { // endRigjt
+              printf("--\r\nedit endright\r\n--");
+              printf("\r\nnoter : cursorRom :%d\r\n", note.cursor_rom);
               notepad(note.setcursor, note.ch, note.keycode); // send to notepad
              
 
             }
-            else if (note.shiftpoint > 1) { // middle  1 <-> max-1
+            else if (note.shiftpoint > 1) { // middle  1 <-> max-1  johnnow 
+              printf("--\r\nedit shift is %d --\r\n",note.shiftpoint);
+              //printf("%c",note.ch);
 
-              note.cursor_rom = note.shiftpoint * note.cursor;
+            
               if (note.cursor <= 18) {
+                printf("\r\nnoter : cursorRom :%d\r\n", note.cursor_rom);
                 notepad(note.setcursor, note.ch, note.keycode);
-                insertsetString(note.str_rom, note.str_ram, note.cursor_rom);
-                // insert_rom(note.str_rom,note.ch,note.setcursor);
-
+               
+              
+      
+              //  insertsetString(note.str_rom, note.str_ram, note.cursor_rom);
+                
 
               }
-              if (keyCode == 80 && note.cursor >= 19 && note.cursor <= 20) {
+              if (keyCode == 80 && note.cursor >= 18 && note.cursor <= 19) {
                 notepad(note.setcursor, '\0', 2);
               } if (note.cursor >= 20) {
                 printf("\r\nMax cursor !! plase delete character \r\n");
@@ -1254,20 +1271,20 @@ void MessangerASCII() {
 
 
 
-            else   if (note.shiftpoint == 1) { // Endleft  johnnow
+            else   if (note.shiftpoint == 1) { // Endleft  
 
-
+            printf("--\r\nedit endleft\r\n--");
               if (note.cursor <= 18) {
-                notepad(note.setcursor, note.ch, note.keycode);
-                insertsetString(note.str_rom, note.str_ram, 1);
+            //    notepad(note.setcursor, note.ch, note.keycode);
+              //  insertsetString(note.str_rom, note.str_ram, 1);
                 // insert_rom(note.str_rom,note.ch,note.setcursor);
 
 
               }
               if (keyCode == 80 && note.cursor >= 19 && note.cursor <= 20) {
-                notepad(note.setcursor, '\0', 2);
+              //  notepad(note.setcursor, '\0', 2);
               } if (note.cursor >= 20) {
-                printf("\r\nMax cursor !! plase delete character \r\n");
+             //   printf("\r\nMax cursor !! plase delete character \r\n");
               }
 
 
@@ -1627,7 +1644,7 @@ void *Enddisplay() {
 }
 
 void newline() {
-  if (note.cursor == 18  && seeCur != 1 ) { // normal newline 
+  if (note.cursor == 18  && seeCur != 1 && (note.shiftpoint >= strlen(note.str_rom)/20) ) { // normal newline 
   Enddisplay();
   }
 

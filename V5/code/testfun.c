@@ -24,57 +24,50 @@ struct  {
 
 } note;
 
+char *insertsetString(char *str, char *ch, int start) {
 
-char *insertString(char *str,char ch,int setcur) {
-  // char *buff; // buffer  = index *buffer = value
-  if (setcur == 0) { // insert First str
-    // str = aaa
-    note.buff = &ch; // ch = A
-    strcpy(note.strfirst, note.buff); // F = A
-    strcpy(note.strlast, str); //  L =  aaa
-    strcat(note.strfirst, note.strlast); // F = A + L = aaa = Aaaa
-    strcpy(note.str_ram, note.strfirst); // Aaaa
-    memset(note.strfirst, 0, strlen(note.strfirst));
-    memset(note.strlast, 0, strlen(note.strlast));
-  }
-  else {
-    note.buff = str;
-    note.i = 0;
-    /*    div  strF/index 0 + index(setcur)   strL = /(intdex setcur + strlen(str) */
-    while (1) {  // separate str to stfF and strLast
-      note.strfirst[note.i]  = *note.buff;  // strf = str index 0 - index setcur
-      note.i++;
-      note.buff++;
-      if (note.i == setcur) {
-        note.i = 0;
-        while (1) {
-          note.strlast[ note.i] = *note.buff;       //
-          note.i++;
-          note.buff++;
-          if ( note.i == setcur + strlen(str)) {
-            break;
-          }
+  note.buff = str;
+  note.buff2 = ch;
+  note.i = 0;
+
+  while (1) {
+    note.i++;
+    note.buff++;
+    if (note.i == start) {
+      //  printf("%c",*note.buff);
+      note.i = 0;
+      while (1) {
+        *note.buff = *note.buff2;
+        note.buff++;
+        note.buff2++;
+
+        if (note.i == strlen(note.buff2)) {
+          break;
         }
-        break;
+
       }
+      break;
     }
-
-    note.buff = &ch;
-    strcat(note.strfirst, note.buff);
-    strcat(note.strfirst, note.strlast);
-    strcpy(note.str_ram, note.strfirst);
-    memset(note.strfirst, 0, strlen(note.strfirst));
-    memset(note.strlast, 0, strlen(note.strlast));
-
   }
+
+
+  //printf("%s",note.str_rom);
 }
+
+
 
 
 void main(){
 	
-	strcpy(note.str_ram,"ABgbsdC");
-	insertString(note.str_ram,'x',3);
-	printf("%s",note.str_ram);
+	strcpy(note.str_ram,"john nonphala Sura\r\n");
+	
+	
+	strcat(note.str_rom,note.str_ram);
+	memset(note)
+	
+	
+	printf("%s",note.str_rom);
+
 	
 }
 

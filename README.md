@@ -1,7 +1,7 @@
 notepad
 
 	< 4096, 20 =  204 > .. ok
-1. add text
+1. add text control by shiftpoint to  left || right
 	- add First shiftpoint is n 
 		- add left to right 
 			- 20 character to 1 line (20 to newline by /r/n auto)  .. > (ok)
@@ -18,9 +18,9 @@ notepad
 
 
 	- add middle shiftpoint is  1 <-> n-1
-		- 20 character to 1 line (20 to newline by /r/n auto)  .. > 
+		- 20 character to 1 line (20 to newline by /r/n auto)  .. >    (now fix ) add new str
 				(fix  18 character  to /r/n)
-					- cut to rom  ... 
+					- cut to rom  ... (sad)
 
 			- by enter keycode is now newline it's add --------- to 20 character and newline ..> 
 			
@@ -31,7 +31,7 @@ notepad
 
 
 	- add last shiftpoint  is 0
-		- 20 character to 1 line (20 to newline by /r/n auto)  .. > (now fix)
+		- 20 character to 1 line (20 to newline by /r/n auto)  .. > 
 				(fix  18 character  to /r/n)
 					- cut to rom  ...  
 
@@ -40,8 +40,12 @@ notepad
 		
 		- insert mid  to left mid right
 			- in now line edit to 18 character add \r\n remmove last character to newline .. > 
-				
-	
+2. delete text
+	- delete First shiftpoint is n 
+		- delete left to right	
+			-delete is 1 character  by cursor is 20 -> 0 
+		
+			
 		
 
 
@@ -78,7 +82,9 @@ solution  add newline in insert character (* = new addstr)
 		
 		
 			  
-			
+- note.cursorrom = strlen(strrom)  + str(strram) + 1
+
+- note.setcursorram = strlen(strrom)
  
 
 

@@ -4,6 +4,7 @@
 // notepad struct 
 int mapcur;
 int seeCur;
+
 struct  {
   int cursor; // auto gen
   int setcursor;  // by user
